@@ -4,7 +4,7 @@ require('dotenv').config();
 
 const sequelize = require('./source/configuration/database');
 const adRoutes = require('./source/routes/adRoutes');
-const userRoutes = require('./source/routes/useRoutes');
+const userRoutes = require('./source/routes/userRoutes');
 
 const app = express();
 const port = 3000;

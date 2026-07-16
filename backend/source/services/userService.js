@@ -13,11 +13,13 @@ const createUser = async (userData) => {
         }
     });
 
-    if (existingUser.email === email) {
-        throw new Error('Email already exists');
-    }
-    else if (existingUser.username === username) {
-        throw new Error('Username already exists');
+    if (existingUser) {
+        if (existingUser.email === email) {
+            throw new Error('Email already exists');
+        }
+        else if (existingUser.username === username) {
+            throw new Error('Username already exists');
+        }
     }
 
     const newUser = await User.create({
@@ -37,6 +39,30 @@ const createUser = async (userData) => {
     };
 };
 
-module.exports = {
-    createUser
+const authenticateUser = async (userData) => {
+    const { username, password } = userData;
+
+    const user = await User.findOne({
+        where: {
+            username: username,
+            password: password
+        }
+    });
+
+    if (!user) {
+        throw new Error('Invalid username or password');
     }
+
+    return {
+        id: user.id,
+        username: user.username,
+        email: user.email,
+        role: user.role,
+        credits: user.credits
+    };
+};
+
+module.exports = {
+    createUser,
+    authenticateUser
+};
