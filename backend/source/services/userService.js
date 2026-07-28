@@ -1,5 +1,6 @@
 const { Op } = require('sequelize');
 const User = require ('../models/User');
+const jwt = require('jsonwebtoken');
 
 const createUser = async (userData) => {
     const {username, email, password } = userData;
@@ -30,16 +31,25 @@ const createUser = async (userData) => {
         credits: 5
     });
 
+    const token = jwt.sign(
+        { username: username, email: email },
+        process.env.JWT_SECRET,
+        { expiresIn: '1h' }
+    );
+
     return {
-        id: newUser.id,
-        username: newUser.username,
-        email: newUser.email,
-        role: newUser.role,
-        credits: newUser.credits
+        user: {
+            id: newUser.id,
+            username: newUser.username,
+            email: newUser.email,
+            role: newUser.role,
+            credits: newUser.credits
+        },
+        token: token
     };
 };
 
-const authenticateUser = async (userData) => {
+const loginUser = async (userData) => {
     const { username, password } = userData;
 
     const user = await User.findOne({
@@ -53,16 +63,37 @@ const authenticateUser = async (userData) => {
         throw new Error('Invalid username or password');
     }
 
+    const token = jwt.sign(
+        { userId: user.id, role: user.role },
+        process.env.JWT_SECRET,
+        { expiresIn: '1h' }
+    )
+
     return {
-        id: user.id,
-        username: user.username,
-        email: user.email,
-        role: user.role,
-        credits: user.credits
+        user: {
+            id: user.id,
+            username: user.username,
+            email: user.email,
+            role: user.role,
+            credits: user.credits
+        },
+        token: token
     };
+    
 };
+
+const logoutUser = async (userId) => {
+    const user = await User.findByPk(userId);
+    if (!user) {
+        throw new Error('User not found');
+    }
+
+
+}
+
 
 module.exports = {
     createUser,
-    authenticateUser
+    loginUser,
+    logoutUser
 };
