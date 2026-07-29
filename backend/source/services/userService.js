@@ -32,7 +32,7 @@ const createUser = async (userData) => {
     });
 
     const token = jwt.sign(
-        { username: username, email: email },
+        { userId: newUser.id, role: newUser.role },
         process.env.JWT_SECRET,
         { expiresIn: '1h' }
     );
@@ -87,9 +87,8 @@ const logoutUser = async (userId) => {
     if (!user) {
         throw new Error('User not found');
     }
-
-
-}
+    return true;
+};
 
 
 module.exports = {

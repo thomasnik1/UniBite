@@ -31,8 +31,9 @@ const loginUser = async (req, res) => {
 
 const logoutUser = async (req, res) => {
     try{
-        const user = await userService.logoutUser(req.body);
-        res.status(200).json({ message: 'Επιτυχής αποσύνδεση!', user: user });
+        const userId = req.user.userId; // Assuming the user ID is available in the request object after authentication
+        const result = await userService.logoutUser(userId);
+        res.status(200).json({ message: 'Επιτυχής αποσύνδεση!', user: result });
     } catch (error) {
         console.error(error);
         res.status(500).json({ error: 'Αποτυχία αποσύνδεσης χρήστη' });
