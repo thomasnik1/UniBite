@@ -12,11 +12,10 @@ const getAds = async (req, res) => {
 
 const createAd = async (req, res) => {
     try {
-
         const cookId = req.user.userId; // Assuming the user ID is available in the request object after authentication
         const adData = {
-            ...req.body,
-            cook_Id: cookId
+            cook_Id: cookId,
+            ...req.body
         };
          // Assuming the user ID is available in the request object after authentication
         const newAd = await adService.createAd(adData);
