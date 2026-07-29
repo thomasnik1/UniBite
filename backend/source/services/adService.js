@@ -8,9 +8,14 @@ const getAllActiveAds = async () => {
     });
 };
 
-const createAd = async (adData) => {
-    // Δημιουργεί μια νέα αγγελία στη βάση
-    return await Ad.create(adData);
+const createAd = async (adData, userId) => {
+
+    const newadData = {
+        cook_Id: userId,
+        ...adData
+    }
+    const newAd = await Ad.create(newadData);
+    return newAd;
 };
 
 module.exports = {
