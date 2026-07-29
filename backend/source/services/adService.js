@@ -22,7 +22,7 @@ const createAd = async (adData) => {
         pickup_location: newadData.pickup_location,
         pickup_time: newadData.pickup_time
     });
-    
+
     return {
         newAd: {
             id: newAd.id,
@@ -38,7 +38,23 @@ const createAd = async (adData) => {
     };
 };
 
+const editAd = async (adId,cookId, adData) => {
+    const ad = await Ad.findByPk(adId);
+
+    if (!ad) {
+        throw new Error('Ad not found');
+    }
+
+    if (ad.cook_id !== cookId) {
+        throw new Error('Unauthorized to edit this ad');
+    }
+
+    await ad.update(adData);
+    return ad;
+}
+
 module.exports = {
     getAllActiveAds,
-    createAd
+    createAd,
+    editAd
 };

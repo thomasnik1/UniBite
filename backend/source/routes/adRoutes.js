@@ -5,5 +5,6 @@ const authenticateToken = require('../middlewares/authMiddleware');
 
 router.get('/feed', adController.getAds);
 router.post('/create', authenticateToken, adController.createAd);
+router.put('/edit/:id', authenticateToken, adController.editAd);
 
 module.exports = router;

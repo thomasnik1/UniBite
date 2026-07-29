@@ -26,7 +26,23 @@ const createAd = async (req, res) => {
     }
 };
 
+const editAd = async (req, res) => {
+    try {
+        const adId = req.params.id;
+        console.log('Ad ID:', adId); // Log the adId to verify it's being received correctly
+        const cookId = req.user.userId;
+        const adData = req.body;
+
+        const editAd = await adService.editAd(adId, cookId, adData);
+        res.status(200).json({ message: 'Η αγγελία ενημερώθηκε!', ad: editAd });
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ error: 'Αποτυχία ενημέρωσης αγγελίας' });
+    }
+};
+
 module.exports = {
     getAds,
-    createAd
+    createAd,
+    editAd
 };
