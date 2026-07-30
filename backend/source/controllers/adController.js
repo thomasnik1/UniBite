@@ -29,7 +29,6 @@ const createAd = async (req, res) => {
 const editAd = async (req, res) => {
     try {
         const adId = req.params.id;
-        console.log('Ad ID:', adId); // Log the adId to verify it's being received correctly
         const cookId = req.user.userId;
         const adData = req.body;
 
@@ -41,8 +40,23 @@ const editAd = async (req, res) => {
     }
 };
 
+const deleteAd = async (req, res) => {
+    try {
+        const adId = req.params.id;
+        const cookId = req.user.userId;
+
+        const deleteAD = await adService.deleteAd(adId, cookId);
+        res.status(200).json({message: 'Η αγγελία διαγράφηκε!', ad: deleteAD});
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ error: 'Αποτυχία διαγραφής αγγελίας' });
+    }
+    
+};
+
 module.exports = {
     getAds,
     createAd,
-    editAd
+    editAd,
+    deleteAd
 };

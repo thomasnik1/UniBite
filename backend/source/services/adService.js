@@ -53,8 +53,24 @@ const editAd = async (adId,cookId, adData) => {
     return ad;
 }
 
+const deleteAd = async (adId, cookId) => {
+    const ad = await Ad.findByPk(adId);
+
+    if (!ad) {
+        throw new Error('Ad not found');
+    }
+
+    if (ad.cook_id !== cookId) {
+        throw new Error('Unauthorized to delete this ad');
+    }
+
+    await ad.update({ status: 'deleted' });
+    return ad;
+}
+
 module.exports = {
     getAllActiveAds,
     createAd,
-    editAd
+    editAd,
+    deleteAd
 };
