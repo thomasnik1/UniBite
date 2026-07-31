@@ -5,6 +5,7 @@ require('dotenv').config();
 const sequelize = require('./source/configuration/database');
 const adRoutes = require('./source/routes/adRoutes');
 const userRoutes = require('./source/routes/userRoutes');
+const requestRoutes = require('./source/routes/requestRoutes');
 
 const app = express();
 const port = 3000;
@@ -15,6 +16,7 @@ app.use(express.json());
 // Σύνδεση των Routes
 app.use('/api/ads', adRoutes);
 app.use('/api/users', userRoutes);
+app.use('/api/requests', requestRoutes);
 
 // Έλεγχος σύνδεσης με DB και εκκίνηση Server
 sequelize.authenticate()
