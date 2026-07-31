@@ -1,13 +1,24 @@
-const Request = require('../models/Request');
+const Request = require('../models/Requests');
 
 const createRequest =  async (requestData) => {
 
+    const { userId, adId } = requestData;
+
     const newRequest = await Request.create({
-        user_id: requestData.userId,
-        ad_id: requestData.adId,
+        consumer_id: userId,
+        ad_id: adId,
         status: 'pending'
     });
-    return newRequest;
+
+    return {
+        newRequest: {
+            id: newRequest.id,
+            consumer_id: newRequest.consumer_id,
+            ad_id: newRequest.ad_id,
+            status: newRequest.status   
+        }
+    };
+
 };
 
 module.exports = {
