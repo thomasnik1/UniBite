@@ -73,7 +73,7 @@ const loginUser = async (userData) => {
     const token = jwt.sign(
         { userId: user.id, role: user.role },
         process.env.JWT_SECRET,
-        { expiresIn: '10s' }
+        { expiresIn: '1h' }
     )
 
     const refreshToken = jwt.sign(
@@ -117,7 +117,7 @@ const refreshToken = async (refreshToken) => {
     if (!user) {
         throw new Error('User not found');
     }
-    
+
     const newToken =jwt.sign(
         { userId: user.id, role: user.role },
         process.env.JWT_SECRET,
