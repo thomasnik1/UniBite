@@ -37,6 +37,12 @@ const createUser = async (userData) => {
         { expiresIn: '1h' }
     );
 
+    const refreshToken = jwt.sign(
+        { userId: newUser.id, role: newUser.role },
+        process.env.REFRESH_TOKEN_SECRET,
+        { expiresIn: '7d' }
+    );
+
     return {
         user: {
             id: newUser.id,
@@ -45,7 +51,8 @@ const createUser = async (userData) => {
             role: newUser.role,
             credits: newUser.credits
         },
-        token: token
+        token: token,
+        refreshToken: refreshToken
     };
 };
 
@@ -66,8 +73,14 @@ const loginUser = async (userData) => {
     const token = jwt.sign(
         { userId: user.id, role: user.role },
         process.env.JWT_SECRET,
-        { expiresIn: '1h' }
+        { expiresIn: '10s' }
     )
+
+    const refreshToken = jwt.sign(
+        { userId: user.id, role: user.role },
+        process.env.REFRESH_TOKEN_SECRET,
+        { expiresIn: '7d' }
+    );
 
     return {
         user: {
@@ -77,7 +90,8 @@ const loginUser = async (userData) => {
             role: user.role,
             credits: user.credits
         },
-        token: token
+        token: token,
+        refreshToken: refreshToken
     };
     
 };
@@ -90,9 +104,35 @@ const logoutUser = async (userId) => {
     return true;
 };
 
+const refreshToken = async (refreshToken) => {
+
+    const decoded = jwt.verify(refreshToken, process.env.REFRESH_TOKEN_SECRET);
+
+    if (!decoded) {
+        throw new Error('Invalid refresh token');
+    }
+
+    const user = await User.findByPk(decoded.userId);
+    
+    if (!user) {
+        throw new Error('User not found');
+    }
+    
+    const newToken =jwt.sign(
+        { userId: user.id, role: user.role },
+        process.env.JWT_SECRET,
+        { expiresIn: '1h' }
+    ); 
+
+    return {
+        token: newToken
+    };
+};
+
 
 module.exports = {
     createUser,
     loginUser,
-    logoutUser
+    logoutUser,
+    refreshToken
 };

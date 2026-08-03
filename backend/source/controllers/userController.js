@@ -7,7 +7,8 @@ const createUser = async (req, res) => {
         res.status(201).json({
             message: 'Ο χρήστης δημιουργήθηκε!', 
             user: result.user,
-            token: result.token
+            token: result.token,
+            refreshToken: result.refreshToken
         });   
     } catch (error) {
         console.error(error);
@@ -21,7 +22,8 @@ const loginUser = async (req, res) => {
         res.status(200).json({
             message: 'Επιτυχής σύνδεση!', 
             user: result.user,
-            token: result.token
+            token: result.token,
+            refreshToken: result.refreshToken
          });
     } catch (error) {
         console.error(error);
@@ -40,8 +42,26 @@ const logoutUser = async (req, res) => {
     }
 };
 
+const refreshToken = async (req, res) => {
+    try {
+        const authHeader = req.headers['authorization'];
+        const refreshToken = authHeader && authHeader.split(' ')[1];
+        
+        if (!refreshToken) {
+            return res.status(401).json({ error: 'Refresh token not provided' });
+        }
+        
+        const result = await userService.refreshToken(refreshToken);
+        res.status(200).json({ refreshToken: result.token });
+    } catch (error) {
+        console.error(error);
+        res.status(403).json({ error: 'Invalid refresh token' });
+    }
+}
+
 module.exports = {
     createUser,
     loginUser,
-    logoutUser
+    logoutUser,
+    refreshToken
 };
