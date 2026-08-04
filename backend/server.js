@@ -5,7 +5,8 @@ require('dotenv').config();
 const sequelize = require('./source/configuration/database');
 const adRoutes = require('./source/routes/adRoutes');
 const userRoutes = require('./source/routes/userRoutes');
-const requestRoutes = require('./source/routes/requestRoutes');
+const requestRoutes = require('./source/routes/requestRoutes'); 
+const cronJob = require('./source/jobs/cronJobs')
 
 const app = express();
 const port = 3000;

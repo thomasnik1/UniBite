@@ -1,4 +1,5 @@
 const Ad = require('../models/Ad');
+const { Op } = require('sequelize');
 
 const getAllActiveAds = async () => {
     // Φέρνει όλες τις αγγελίες με status 'active'
@@ -68,9 +69,31 @@ const deleteAd = async (adId, cookId) => {
     return ad;
 }
 
+const deleteExpiredAds = async() => {
+    try {
+        const expirationDate = new Date();
+        expirationDate.setHours = (expirationDate.getHours() - 48);
+
+        const expiredAds = await Ad.update(
+            { status: 'deleted' },
+            {
+                where: {
+                    created_at: {
+                        [Op.lt]: expirationDate
+                    },
+                    status: 'active'
+                }
+            }
+        );
+    } catch (error) {
+        console.error('Error deleting expired ads:', error);
+    }
+}
+
 module.exports = {
     getAllActiveAds,
     createAd,
     editAd,
-    deleteAd
+    deleteAd,
+    deleteExpiredAds
 };
