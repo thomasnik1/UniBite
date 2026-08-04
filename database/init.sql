@@ -1,4 +1,4 @@
-USE unibite_db;
+USE unibite;
 
 -- Δημιουργία Πίνακα Χρηστών
 CREATE TABLE IF NOT EXISTS users (

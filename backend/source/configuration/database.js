@@ -9,6 +9,7 @@ const sequelize = new Sequelize(
         host: process.env.DB_HOST,
         port: process.env.DB_PORT,
         dialect: 'mysql',
+        timezone: '+03:00', // Ρύθμιση ζώνης ώρας σε GMT+3
         logging: false // Κρύβει τα SQL queries από το τερματικό για να είναι καθαρό
     }
 );

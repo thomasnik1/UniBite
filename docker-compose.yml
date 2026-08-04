@@ -1,10 +1,11 @@
 services:
   db:
     image: mysql:lts
-    container_name: unibite-mysql
+    container_name: unibite
     environment:
       MYSQL_ROOT_PASSWORD: secretpassword
-      MYSQL_DATABASE: unibite_db
+      MYSQL_DATABASE: unibite
+      TZ: Europe/Athens
     ports:
       - "3306:3306"
     volumes:

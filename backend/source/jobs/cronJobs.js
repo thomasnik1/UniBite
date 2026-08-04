@@ -2,7 +2,7 @@ const { CronJob } = require('cron');
 const { deleteExpiredAds } = require('../services/adService');
 
 const job = new CronJob(
-    '*/10 * * * * *',
+    '0 * * * * *',
     deleteExpiredAds,
     null,
     true,
