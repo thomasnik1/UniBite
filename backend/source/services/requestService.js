@@ -22,12 +22,10 @@ const createRequest =  async (requestData) => {
 
 };
 
-const acceptRequest = async (requestId, requestedPortions) => {
+const acceptRequest = async (requestData) => {
+    const { requestId, portions } = requestData;
     const request = await Request.findByPk(requestId);
-    const portions = requestedPortions;
 
-    console.log(request);
-    console.log(portions);
     if (!request) {
         throw new Error('Request not found');
     };
