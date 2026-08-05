@@ -1,4 +1,5 @@
 const Request = require('../models/Requests');
+const { Op } = require('sequelize');
 
 const createRequest =  async (requestData) => {
 
@@ -21,6 +22,25 @@ const createRequest =  async (requestData) => {
 
 };
 
+const acceptRequest = async (requestId, requestedPortions) => {
+    const request = await Request.findByPk(requestId);
+    const portions = requestedPortions;
+
+    console.log(request);
+    console.log(portions);
+    if (!request) {
+        throw new Error('Request not found');
+    };
+
+    if (request.status !== 'pending') {
+        throw new Error('Request is not pending');
+    };
+
+    await request.update({ status: 'approved' });
+    return request;
+};
+
 module.exports = {
-    createRequest
+    createRequest,
+    acceptRequest
 };

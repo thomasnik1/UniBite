@@ -12,6 +12,18 @@ const createRequest = async (req, res) => {
     }
 };
 
-module.exports = {
-    createRequest
+const acceptRequest =  async (req, res) => {
+    try {
+        const requestId = req.params.id;
+        const portions = req.body.portions;
+        const result = await requestService.acceptRequest(requestId, portions);
+        res.status(200).json({ message: 'Η αίτηση έγινε αποδεκτή!', request: result });
+    } catch (error) {
+        res.status(500).json({ message: 'Σφάλμα κατά την αποδοχή της αίτησης', error: error });
+    }
 };
+
+module.exports = {
+    createRequest,
+    acceptRequest
+};          
