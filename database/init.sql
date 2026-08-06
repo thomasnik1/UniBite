@@ -31,6 +31,7 @@ CREATE TABLE IF NOT EXISTS requests (
     id INT AUTO_INCREMENT PRIMARY KEY,
     ad_id INT NOT NULL,
     consumer_id INT NOT NULL,
+    portions INT NOT NULL,
     status ENUM('pending', 'approved', 'rejected') DEFAULT 'pending',
     is_picked_up BOOLEAN DEFAULT FALSE,
     rating INT CHECK (rating >= 1 AND rating <= 5) DEFAULT NULL,
