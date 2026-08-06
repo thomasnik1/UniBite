@@ -9,7 +9,8 @@ const createRequest = async (req, res) => {
         });
         res.status(201).json({ message: 'Η αίτηση δημιουργήθηκε!', request: request });
     } catch (error) {
-        res.status(500).json({ message: 'Σφάλμα κατά τη δημιουργία της αίτησης', error: error });
+        console.error(error);
+        res.status(500).json({ message: 'Σφάλμα κατά τη δημιουργία της αίτησης' });
     }
 };
 
@@ -19,7 +20,8 @@ const acceptRequest = async (req, res) => {
         const result = await requestService.acceptRequest(request);
         res.status(200).json({ message: 'Η αίτηση έγινε αποδεκτή!', request: result });
     } catch (error) {
-        res.status(500).json({ message: 'Σφάλμα κατά την αποδοχή της αίτησης', error: error });
+        console.error(error);
+        res.status(500).json({ message: 'Σφάλμα κατά την αποδοχή της αίτησης' });
     }
 };
 
@@ -29,7 +31,8 @@ const rejectRequest = async (req, res) => {
         const result = await requestService.rejectRequest(request);
         res.status(200).json({ message: 'Η αίτηση απορρίφθηκε!', request: result });
     } catch (error) {
-        res.status(500).json({ message: 'Σφάλμα κατά την απόρριψη της αίτησης', error: error });
+        console.error(error);
+        res.status(500).json({ message: 'Σφάλμα κατά την απόρριψη της αίτησης' });
     }
 };
 

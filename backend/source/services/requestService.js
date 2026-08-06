@@ -50,16 +50,19 @@ const acceptRequest = async (requestId) => {
         throw new Error('Ad not found');
     };
 
-    if (ad.portions < request.portions) {
-        throw new Error('Not enough portions available');
-    }
-
     if (request.status !== 'pending') {
         throw new Error('Request is not pending');
     };
 
+    if (ad.portions < request.portions) {
+        throw new Error('Not enough portions available');
+    };
+
     await request.update({ status: 'approved' });
     await ad.update({ portions: ad.portions - request.portions });
+    if (ad.portions - request.portions === 0) {
+        await ad.update ({ status: 'inactive' });
+    };
     return request;
 };
 
