@@ -40,5 +40,3 @@ CREATE TABLE IF NOT EXISTS requests (
     FOREIGN KEY (ad_id) REFERENCES ads(id) ON DELETE CASCADE,
     FOREIGN KEY (consumer_id) REFERENCES users(id) ON DELETE CASCADE
 );
-
-//comment

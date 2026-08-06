@@ -23,16 +23,18 @@ const acceptRequest = async (req, res) => {
     }
 };
 
-// const rejectRequest = async (req, res) => {
-//     try {
-//         const result = await requestService.rejectRequest({
-//             requestId: req.params.id,
-            
-//         })
-//     }
-// }
+const rejectRequest = async (req, res) => {
+    try {
+        const request = req.params.id;
+        const result = await requestService.rejectRequest(request);
+        res.status(200).json({ message: 'Η αίτηση απορρίφθηκε!', request: result });
+    } catch (error) {
+        res.status(500).json({ message: 'Σφάλμα κατά την απόρριψη της αίτησης', error: error });
+    }
+};
 
 module.exports = {
     createRequest,
-    acceptRequest
+    acceptRequest,
+    rejectRequest
 };          
