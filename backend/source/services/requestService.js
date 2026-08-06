@@ -3,11 +3,12 @@ const { Op } = require('sequelize');
 
 const createRequest =  async (requestData) => {
 
-    const { userId, adId } = requestData;
+    const { userId, adId , portions } = requestData;
 
     const newRequest = await Request.create({
         consumer_id: userId,
         ad_id: adId,
+        portions: portions,
         status: 'pending'
     });
 
@@ -15,6 +16,7 @@ const createRequest =  async (requestData) => {
         newRequest: {
             id: newRequest.id,
             consumer_id: newRequest.consumer_id,
+            portions: newRequest.portions,
             ad_id: newRequest.ad_id,
             status: newRequest.status   
         }
@@ -22,8 +24,7 @@ const createRequest =  async (requestData) => {
 
 };
 
-const acceptRequest = async (requestData) => {
-    const { requestId, portions } = requestData;
+const acceptRequest = async (requestId) => {
     const request = await Request.findByPk(requestId);
 
     if (!request) {

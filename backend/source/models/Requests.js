@@ -13,6 +13,10 @@ const Request = sequelize.define('Request', {
     status : {
         type : DataTypes.ENUM('pending', 'approved', 'rejected'),
         defaultValue : 'pending'
+    },
+    portions : {
+        type : DataTypes.INTEGER,
+        allowNull : false
     }
 }, {
     tableName : 'requests',
