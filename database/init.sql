@@ -34,9 +34,16 @@ CREATE TABLE IF NOT EXISTS requests (
     portions INT NOT NULL,
     status ENUM('pending', 'approved', 'rejected') DEFAULT 'pending',
     is_picked_up BOOLEAN DEFAULT FALSE,
-    rating INT CHECK (rating >= 1 AND rating <= 5) DEFAULT NULL,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     pickup_time TIMESTAMP NULL DEFAULT NULL,
     FOREIGN KEY (ad_id) REFERENCES ads(id) ON DELETE CASCADE,
     FOREIGN KEY (consumer_id) REFERENCES users(id) ON DELETE CASCADE
 );
+
+CREATE TABLE IF NOT EXISTS ratings (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    request_id INT NOT NULL,
+    rating INT CHECK (rating >= 1 AND rating <= 5) NOT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (request_id) REFERENCES requests(id) ON DELETE CASCADE
+)

@@ -6,7 +6,7 @@ const getAds = async (req, res) => {
         res.json(ads);
     } catch (error) {
         console.error(error);
-        res.status(500).json({ error: 'Αποτυχία λήψης αγγελιών' });
+        res.status(500).json({ error: 'Αποτυχία λήψης αγγελιών', message: error.message });
     }
 };
 
@@ -22,7 +22,7 @@ const createAd = async (req, res) => {
         res.status(201).json({ message: 'Η αγγελία δημιουργήθηκε!', ad: newAd });
     } catch (error) {
         console.error(error);
-        res.status(500).json({ error: 'Αποτυχία δημιουργίας αγγελίας' });
+        res.status(500).json({ error: 'Αποτυχία δημιουργίας αγγελίας', message: error.message });
     }
 };
 
@@ -36,7 +36,7 @@ const editAd = async (req, res) => {
         res.status(200).json({ message: 'Η αγγελία ενημερώθηκε!', ad: editAd });
     } catch (error) {
         console.error(error);
-        res.status(500).json({ error: 'Αποτυχία ενημέρωσης αγγελίας' });
+        res.status(500).json({ error: 'Αποτυχία ενημέρωσης αγγελίας', message: error.message });
     }
 };
 
@@ -49,7 +49,7 @@ const deleteAd = async (req, res) => {
         res.status(200).json({message: 'Η αγγελία διαγράφηκε!', ad: deleteAD});
     } catch (error) {
         console.error(error);
-        res.status(500).json({ error: 'Αποτυχία διαγραφής αγγελίας' });
+        res.status(500).json({ error: 'Αποτυχία διαγραφής αγγελίας', message: error.message });
     }
     
 };
