@@ -16,6 +16,23 @@ const createRating = async (req, res) => {
     }
 };
 
+const editRating = async (req, res) => {
+    try {
+        const result =  await ratingService.editRating({
+            user_id : req.user.userId,
+            rating_id : req.body.request_id,
+            rating : req.body.rating
+        });
+
+    res.status(200).json({ message: 'Η αξιολογηση ενημερωσθηκε επιτυχως', rating: result});
+    }
+    catch (error) {
+        console.error(error);
+        res.status(500).json({ message: 'Η ενημερωση της αξιολογησης απετυχε', error: error.message });
+    }
+};
+
 module.exports = {
-    createRating
+    createRating,
+    editRating
 };

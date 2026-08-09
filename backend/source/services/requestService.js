@@ -115,7 +115,7 @@ const confirmPickup = async (requestData) => {
     };
 
     await request.update({ is_picked_up: 1 });
-    return request;
+    return;
 }
 
 module.exports = {

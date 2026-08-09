@@ -5,7 +5,7 @@ const User =  require('../models/User');
 const { Op } = require('sequelize');
 
 const createRating = async (ratingData) => {
-    const { consumer_id, request_id, rating } = ratingData;
+    const { consumer_id, request_id, rating_score } = ratingData;
 
     const request = await Request.findByPk(request_id);
     if (!request) {
@@ -36,12 +36,30 @@ const createRating = async (ratingData) => {
     const newRating = await Rating.create({
         consumer_id,
         request_id,
-        rating
+        rating_score
     });
 
     return newRating;
 }
 
+const editrating = async (ratingData) => {
+    const { consumer_id, rating_id, rating_score } = ratingData;
+    const rating = await Rating.findByPk(rating_id);
+
+    if (!rating) {
+        throw new Error('Rating not found');
+    };
+
+    if (rating.consumer_id !== consumer_id) {
+        throw new Error('Unauthorized to rate this request');
+    };
+
+    const editedRating = await Rating.update(ratingData);
+
+    return editedRating;
+};
+
 module.exports = {
-    createRating
+    createRating,
+    editrating
 };
