@@ -4,8 +4,8 @@ const createRating = async (req, res) => {
     try {
         const result = await ratingService.createRating({
             consumer_id : req.user.userId,
-            request_id : req.body.request_id,
-            rating : req.body.rating
+            request_id : req.body.requestId,
+            score : req.body
         });
 
         res.status(201).json({ message: 'Η αξιολόγηση δημιουργήθηκε!', rating: result });
@@ -20,8 +20,8 @@ const editRating = async (req, res) => {
     try {
         const result =  await ratingService.editRating({
             user_id : req.user.userId,
-            rating_id : req.body.request_id,
-            rating : req.body.rating
+            rating_id : req.body.rating_id,
+            score : req.body.score
         });
 
     res.status(200).json({ message: 'Η αξιολογηση ενημερωσθηκε επιτυχως', rating: result});

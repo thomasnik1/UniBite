@@ -42,7 +42,7 @@ const createRating = async (ratingData) => {
     return newRating;
 }
 
-const editrating = async (ratingData) => {
+const editRating = async (ratingData) => {
     const { consumer_id, rating_id, rating_score } = ratingData;
     const rating = await Rating.findByPk(rating_id);
 
@@ -61,5 +61,5 @@ const editrating = async (ratingData) => {
 
 module.exports = {
     createRating,
-    editrating
+    editRating
 };
