@@ -17,6 +17,11 @@ const Request = sequelize.define('Request', {
     portions : {
         type : DataTypes.INTEGER,
         allowNull : false
+    },
+    is_picked_up : {
+        type : DataTypes.TINYINT,
+        defaultValue : 0,
+        allowNull : false 
     }
 }, {
     tableName : 'requests',

@@ -10,8 +10,6 @@ const createRequest =  async (requestData) => {
     const ad = await Ad.findByPk(adId);
     const user = await User.findByPk(userId);
 
-    console.log('portions: ', portions);
-
     if (!ad) {
         throw new Error('Ad not found');
     };
@@ -75,7 +73,7 @@ const acceptRequest = async (requestId) => {
 
     await request.update({ status: 'approved' });
     await ad.update({ portions: ad.portions - request.portions });
-    
+
     if (ad.portions - request.portions === 0) {
         await ad.update ({ status: 'inactive' });
     };
@@ -99,8 +97,30 @@ const rejectRequest = async (requestId) => {
     return request;
 };
 
+const confirmPickup = async (requestData) => {
+    const { cook_id , ad_id, request_id } = requestData;
+
+    const ad = await Ad.findByPk(ad_id);
+    const cook = await User.findByPk(cook_id);
+    const request = await Request.findByPk(request_id);
+
+    console.log(requestData);
+
+    if(cook.id !== ad.cook_id) {
+        throw new Error('Unauthorized to confirm pickup');
+    };
+
+    if (request.status !== 'approved') {
+        throw new Error('Request is not approved');
+    };
+
+    await request.update({ is_picked_up: 1 });
+    return request;
+}
+
 module.exports = {
     createRequest,
     acceptRequest,
-    rejectRequest
+    rejectRequest,
+    confirmPickup
 };

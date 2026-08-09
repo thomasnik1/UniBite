@@ -36,8 +36,24 @@ const rejectRequest = async (req, res) => {
     }
 };
 
+const confirmPickup = async (req, res) => {
+    try {
+        const result = await requestService.confirmPickup({
+        cook_id: req.user.userId,
+        ad_id : req.body.adId,
+        request_id : req.body.requestId
+        });
+
+        res.status(200).json({ message: 'Η μεριδα παρεληφθη επιτυχως', request: result });
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ message: ' Αποτυχια κατα την επιβεβαιωση παραλαβης', error: error.message});
+    }
+};
+
 module.exports = {
     createRequest,
     acceptRequest,
-    rejectRequest
+    rejectRequest,
+    confirmPickup
 };          
