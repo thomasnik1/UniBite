@@ -10,6 +10,8 @@ const createRequest =  async (requestData) => {
     const ad = await Ad.findByPk(adId);
     const user = await User.findByPk(userId);
 
+    console.log('portions: ', portions);
+
     if (!ad) {
         throw new Error('Ad not found');
     };
@@ -37,6 +39,8 @@ const createRequest =  async (requestData) => {
         status: 'pending'
     });
 
+    await user.update({ credits: user.credits - portions });
+
     return {
         newRequest: {
             id: newRequest.id,
@@ -46,9 +50,6 @@ const createRequest =  async (requestData) => {
             status: newRequest.status   
         }
     };
-
-    await user.update({ credits: user.credits - portions });
-
 };
 
 const acceptRequest = async (requestId) => {
@@ -74,6 +75,7 @@ const acceptRequest = async (requestId) => {
 
     await request.update({ status: 'approved' });
     await ad.update({ portions: ad.portions - request.portions });
+    
     if (ad.portions - request.portions === 0) {
         await ad.update ({ status: 'inactive' });
     };

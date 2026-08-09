@@ -2,6 +2,10 @@ const { DataTypes } = require('sequelize');
 const sequelize = require('../configuration/database');
 
 const Rating = sequelize.define('Rating', {
+    consumer_id: {
+        type: DataTypes.INTEGER,
+        allowNull: false
+    },
     request_id: {
         type: DataTypes.INTEGER,
         allowNull: false
@@ -17,7 +21,8 @@ const Rating = sequelize.define('Rating', {
 }, {
     tableName: 'ratings',
     timestamps: true,
-    createdAt: 'created_at'
+    createdAt: 'created_at',
+    updatedAt: false
 });
 
 module.exports = Rating;

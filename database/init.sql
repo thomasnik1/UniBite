@@ -42,6 +42,7 @@ CREATE TABLE IF NOT EXISTS requests (
 
 CREATE TABLE IF NOT EXISTS ratings (
     id INT AUTO_INCREMENT PRIMARY KEY,
+    consumer_id INT NOT NULL,
     request_id INT NOT NULL,
     rating INT CHECK (rating >= 1 AND rating <= 5) NOT NULL,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
