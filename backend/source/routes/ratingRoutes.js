@@ -5,6 +5,6 @@ const authenticateToken = require('../middlewares/authMiddleware');
 
 router.post ('/create', authenticateToken, ratingController.createRating);
 router.put('/edit', authenticateToken, ratingController.editRating);
-//router.delete('/delete', authenticateToken, ratingController.deleteRating);
+router.delete('/delete/:id', authenticateToken, ratingController.deleteRating);
 
 module.exports = router;

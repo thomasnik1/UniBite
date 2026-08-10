@@ -32,7 +32,22 @@ const editRating = async (req, res) => {
     }
 };
 
+const deleteRating = async (req, res) => {
+    try {
+        const rating_id = req.params.id;
+        const user_id = req.user.userId;
+
+        const result = await ratingService.deleteRating( rating_id, user_id );
+        res.status(200).json({ message: 'Η αγιολογηση διαγραφθηκε επιτυχως', rating: result });
+    } catch (error) {
+        console.log(error);
+        res.status(500).json({ message: 'Σφαλμα κατα τη διαγραφη της αξιολογησης', error: error.message });
+    }
+};
+
+
 module.exports = {
     createRating,
-    editRating
+    editRating,
+    deleteRating
 };
