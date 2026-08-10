@@ -1,6 +1,7 @@
 const { Op } = require('sequelize');
 const User = require ('../models/User');
 const jwt = require('jsonwebtoken');
+const passwordService = require ('../services/passwordService');
 
 const createUser = async (userData) => {
     const {username, email, password } = userData;
@@ -23,10 +24,12 @@ const createUser = async (userData) => {
         }
     }
 
+    const hashedPassword = await passwordService.hashPassword(password);
+
     const newUser = await User.create({
-        username,
-        email,
-        password,
+        username : username,
+        email: email,
+        password: hashedPassword,
         role: 'student',
         credits: 5
     });
@@ -48,6 +51,7 @@ const createUser = async (userData) => {
             id: newUser.id,
             username: newUser.username,
             email: newUser.email,
+            password : newUser.password,
             role: newUser.role,
             credits: newUser.credits
         },
@@ -59,22 +63,24 @@ const createUser = async (userData) => {
 const loginUser = async (userData) => {
     const { username, password } = userData;
 
-    const user = await User.findOne({
-        where: {
-            username: username,
-            password: password
-        }
-    });
+    const user = await User.findOne({ where : { username } });
 
     if (!user) {
         throw new Error('Invalid username or password');
-    }
+    };
+
+    const isPasswordValid = await passwordService.verifyPassword(password, user.password);
+
+    if (!isPasswordValid) {
+        throw new Error('Invalid username or password');
+
+    };
 
     const token = jwt.sign(
         { userId: user.id, role: user.role },
         process.env.JWT_SECRET,
         { expiresIn: '1h' }
-    )
+    );
 
     const refreshToken = jwt.sign(
         { userId: user.id, role: user.role },

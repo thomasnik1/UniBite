@@ -62,7 +62,6 @@ const editRating = async (ratingData) => {
 const deleteRating = async ( rating_id, user_id ) => {
     const rating = await Rating.findByPk(rating_id);
 
-    console.log('user:', user_id, 'rating_id:', rating_id);
     if (!rating) {
         throw new Error('Rating not found');
     };
