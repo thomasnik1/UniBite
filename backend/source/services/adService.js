@@ -9,58 +9,52 @@ const getAllActiveAds = async () => {
 };
 
 const createAd = async (adData) => {
+   
     const newAdData = {
         ...adData
     }
+//probably need to add some checks here
     
-    const newAd = await Ad.create({
-        cookId: newAdData.cookId,
-        title: newAdData.title,
-        description: newAdData.description,
-        allergens: newAdData.allergens,
-        portions: newAdData.portions,
-        pickupLocation: newAdData.pickupLocation,
-        pickupTime: newAdData.pickupTime
-    });
+    const newAd = await Ad.create(newAdData);
 
-    return {
-        newAd: {
-            id: newAd.id,
-            cookId: newAd.cookId,
-            title: newAd.title,
-            description: newAd.description,
-            allergens: newAd.allergens,
-            portions: newAd.portions,
-            pickupLocation: newAd.pickupLocation,
-            pickupTime: newAd.pickupTime,
-            status: newAd.status
-        }
-    };
+    return newAd;
 };
 
-const editAd = async (adId,cookId, adData) => {
-    const ad = await Ad.findByPk(adId);
+const editAd = async (editAdData) => {
+
+    const newEditAdData = {
+        ...editAdData
+    };
+
+    const ad = await Ad.findByPk(newEditAdData.adId);
 
     if (!ad) {
         throw new Error('Ad not found');
     }
 
-    if (ad.cook_id !== cookId) {
+    if (ad.cookId !== newEditAdData.cookId) {
         throw new Error('Unauthorized to edit this ad');
     }
 
-    await ad.update(adData);
+    //this might break right here, need to test later
+
+    await ad.update(newEditAdData);
     return ad;
 };
 
-const deleteAd = async (adId, cookId) => {
-    const ad = await Ad.findByPk(adId);
+const deleteAd = async (deleteAdData) => {
+
+    const newDeleteAdData = {
+        ...deleteAdData
+    };
+
+    const ad = await Ad.findByPk(newDeleteAdData.adId);
 
     if (!ad) {
         throw new Error('Ad not found');
     }
 
-    if (ad.cook_id !== cookId) {
+    if (ad.cook_id !== newDeleteAdData.cookId) {
         throw new Error('Unauthorized to delete this ad');
     }
 

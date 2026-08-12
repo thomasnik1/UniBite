@@ -2,13 +2,12 @@ const userService = require('../services/userService');
 
 const createUser = async (req, res) => {
     try{
+        const createUserData = {
+            ...req.body
+        };
+
         const result = await userService.createUser(req.body);
-        res.status(201).json({
-            message: 'Ο χρήστης δημιουργήθηκε!', 
-            user: result.user,
-            token: result.token,
-            refreshToken: result.refreshToken
-        });   
+        res.status(201).json({ message: 'Ο χρήστης δημιουργήθηκε!', result });   
     } catch (error) {
         console.error(error);
         res.status(500).json({ error: 'Αποτυχία δημιουργίας χρήστη' });

@@ -12,12 +12,11 @@ const getAds = async (req, res) => {
 
 const createAd = async (req, res) => {
     try {
-        // const cookId = req.user.userId; // Assuming the user ID is available in the request object after authentication
         const adData = {
             cookId: req.user.userId,
             ...req.body
         };
-         // Assuming the user ID is available in the request object after authentication
+
         const newAd = await adService.createAd(adData);
         res.status(201).json({ message: 'Η αγγελία δημιουργήθηκε!', ad: newAd });
     } catch (error) {
@@ -28,13 +27,13 @@ const createAd = async (req, res) => {
 
 const editAd = async (req, res) => {
     try {
-        const adId = req.params.id;
-        const cookId = req.user.userId;
-        const adData = {
+        const editAdData = {
+            adId: req.params.id,
+            cookId: req.user.userId,
             ...req.body
         };
 
-        const editAd = await adService.editAd(adId, cookId, adData);
+        const editAd = await adService.editAd(editAdData);
         res.status(200).json({ message: 'Η αγγελία ενημερώθηκε!', ad: editAd });
     } catch (error) {
         console.error(error);
@@ -44,10 +43,12 @@ const editAd = async (req, res) => {
 
 const deleteAd = async (req, res) => {
     try {
-        const adId = req.params.id;
-        const cookId = req.user.userId;
-
-        const deleteAd = await adService.deleteAd(adId, cookId);
+        const deleteAdData = {
+            adId: req.params.id,
+            cookId: req.user.userId
+        };
+        
+        const result = await adService.deleteAd(deleteAdData);
         res.status(200).json({message: 'Η αγγελία διαγράφηκε!', ad: deleteAd});
     } catch (error) {
         console.error(error);

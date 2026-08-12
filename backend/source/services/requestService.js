@@ -7,10 +7,9 @@ const createRequest =  async (requestData) => {
         ...requestData
     };
 
-    console.log(newRequestData);
     const ad = await Ad.findByPk(newRequestData.adId);
     const user = await User.findByPk(newRequestData.consumerId);
-    console.log(user);
+
     if (!ad) {
         throw new Error('Ad not found');
     };
@@ -58,13 +57,12 @@ const acceptRequest = async (acceptRequestData) => {
     };
 
     const request = await Request.findByPk(newAcceptRequestData.requestId);
+    const ad = await Ad.findByPk(request.adId);
 
 
     if (!request) {
         throw new Error('Request not found');
     };
-
-    const ad = await Ad.findByPk(request.adId);
 
     if (!ad) {
         throw new Error('Ad not found');
@@ -82,7 +80,6 @@ const acceptRequest = async (acceptRequestData) => {
         throw new Error('Unauthorized to accept this request');
     };
 
-
     await request.update({ status: 'approved' });
     await ad.update({ portions: ad.portions - request.portions });
 
@@ -92,10 +89,15 @@ const acceptRequest = async (acceptRequestData) => {
     return request;
 };
 
-const rejectRequest = async (requestId) => {
+const rejectRequest = async (rejectRequestData) => {
     
-    const request = await Request.findByPk(requestId);
-    const user = await User.findByPk(request.consumer_id);
+    const newRejectRequestData = {
+        ...rejectRequestData
+    };
+
+    const request = await Request.findByPk(newRejectRequestData.requestId);
+    const ad = await Ad.findByPk(request.adId);
+    const user = await User.findByPk(request.consumerId);
 
     if (!request) {
         throw new Error('Request not found');
@@ -105,21 +107,27 @@ const rejectRequest = async (requestId) => {
         throw new Error('Request is not pending');
     };
 
+    if (ad.cookId !== newRejectRequestData.cookId) {
+        throw new Error('Unauthorized to reject this request.')
+    };
+
     await request.update({ status: 'rejected' });
     await user.update({ credits: user.credits + request.portions });
     return request;
 };
 
-const confirmPickup = async (requestData) => {
-    const { cook_id , request_id, ad_id } = requestData;
+const confirmPickup = async (confirmPickupData) => {
+    const newConfirmPickupData = {
+        ...confirmPickupData
+    };
 
-    const ad = await Ad.findByPk(ad_id);
-    const cook = await User.findByPk(cook_id);
-    const request = await Request.findByPk(request_id);
+    const ad = await Ad.findByPk(newConfirmPickupData.adId);
+    const cook = await User.findByPk(newConfirmPickupData.cookId);
+    const request = await Request.findByPk(newConfirmPickupData.requestId);
 
     console.log(requestData);
 
-    if(cook.id !== ad.cook_id) {
+    if(cook.id !== ad.cookId) {
         throw new Error('Unauthorized to confirm pickup');
     };
 
@@ -127,12 +135,12 @@ const confirmPickup = async (requestData) => {
         throw new Error('Request is not approved');
     };
 
-    await request.update({ is_picked_up: 1 });
+    await request.update({ isPickedUp: 1 });
     return;
 };
 
-const showPendingRequests = async (user_id) => {
-    const user = await User.findByPk(user_id);
+const showPendingRequests = async (userId) => {
+    const user = await User.findByPk(userId);
 
     if(!user) {
         throw new Error('User does not exist');

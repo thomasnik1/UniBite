@@ -30,8 +30,12 @@ const acceptRequest = async (req, res) => {
 
 const rejectRequest = async (req, res) => {
     try {
-        const request = req.params.id;
-        const result = await requestService.rejectRequest(request);
+        const rejectRequestData = {
+            requestId: req.params.id,
+            cookId: req.user.userId
+        };
+
+        const result = await requestService.rejectRequest(rejectRequestData);
         res.status(200).json({ message: 'Η αίτηση απορρίφθηκε!', request: result });
     } catch (error) {
         console.error(error);
@@ -41,12 +45,13 @@ const rejectRequest = async (req, res) => {
 
 const confirmPickup = async (req, res) => {
     try {
-        const result = await requestService.confirmPickup({
-        cook_id: req.user.userId,
-        request: req.params.id,
-        ad_id : req.body.adId
-        });
+        const confirmPickupData = {
+            cookId: req.user.userId,
+            requestId: req.params.id,
+            adId: req.body.adId
+        };
 
+        const result = await requestService.confirmPickup(confirmPickupData);
         res.status(200).json({ message: 'Η μεριδα παρεληφθη επιτυχως', request: result });
     } catch (error) {
         console.error(error);
@@ -56,8 +61,8 @@ const confirmPickup = async (req, res) => {
 
 const showPendingRequests = async (req, res) => {
     try {
-        const user = req.user.userId;
-        const result = await requestService.showPendingRequests(user);
+        const userId = req.user.userId;
+        const result = await requestService.showPendingRequests(userId);
         res.status(200).json({ message: 'Pending requests', result });
     } catch (error) {
         console.error(error);

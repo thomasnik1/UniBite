@@ -2,9 +2,8 @@ const ratingService = require('../services/ratingService');
 
 const createRating = async (req, res) => {
     try {
-        const raterId = req.userId;
         const newRatingData = {
-            consumer_id: raterId,
+            consumer_id: req.user.userId,
             ...req.body
         }
         const result = await ratingService.createRating(newRatingData);
@@ -19,13 +18,13 @@ const createRating = async (req, res) => {
 
 const editRating = async (req, res) => {
     try {
-        const result =  await ratingService.editRating({
-            user_id : req.user.userId,
-            rating_id : req.body.rating_id,
-            score : req.body.score
-        });
-
-    res.status(200).json({ message: 'Η αξιολογηση ενημερωσθηκε επιτυχως', rating: result});
+        const editRatingData = {
+            raterId: req.user.userId,
+            ...req.body
+        };
+        
+        const result = await ratingService.editRating(editRatingData);
+        res.status(200).json({ message: 'Η αξιολογηση ενημερωσθηκε επιτυχως', rating: result});
     }
     catch (error) {
         console.error(error);
