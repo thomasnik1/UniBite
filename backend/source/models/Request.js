@@ -2,12 +2,14 @@ const { DataTypes } = require('sequelize');
 const sequelize = require('../configuration/database');
 
 const Request = sequelize.define('Request', {
-    ad_id : {
+    adId : {
         type : DataTypes.INTEGER,
+        field: 'ad_id',
         allowNull : false
     },
-    consumer_id : {
+    consumerId : {
         type : DataTypes.INTEGER,
+        field: 'consumer_id',
         allowNull : false
     },
     status : {
@@ -18,8 +20,9 @@ const Request = sequelize.define('Request', {
         type : DataTypes.INTEGER,
         allowNull : false
     },
-    is_picked_up : {
+    isPickedUp : {
         type : DataTypes.TINYINT,
+        field: 'is_picked_up',
         defaultValue : 0,
         allowNull : false 
     }

@@ -37,7 +37,7 @@ const createUser = async (userData) => {
     const token = jwt.sign(
         { userId: newUser.id, role: newUser.role },
         process.env.JWT_SECRET,
-        { expiresIn: '1h' }
+        { expiresIn: '3h' }
     );
 
     const refreshToken = jwt.sign(
@@ -79,7 +79,7 @@ const loginUser = async (userData) => {
     const token = jwt.sign(
         { userId: user.id, role: user.role },
         process.env.JWT_SECRET,
-        { expiresIn: '1h' }
+        { expiresIn: '3h' }
     );
 
     const refreshToken = jwt.sign(
@@ -127,7 +127,7 @@ const refreshToken = async (refreshToken) => {
     const newToken =jwt.sign(
         { userId: user.id, role: user.role },
         process.env.JWT_SECRET,
-        { expiresIn: '1h' }
+        { expiresIn: '3h' }
     ); 
 
     return {

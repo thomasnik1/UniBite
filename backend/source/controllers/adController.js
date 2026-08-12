@@ -12,9 +12,9 @@ const getAds = async (req, res) => {
 
 const createAd = async (req, res) => {
     try {
-        const cookId = req.user.userId; // Assuming the user ID is available in the request object after authentication
+        // const cookId = req.user.userId; // Assuming the user ID is available in the request object after authentication
         const adData = {
-            cook_Id: cookId,
+            cookId: req.user.userId,
             ...req.body
         };
          // Assuming the user ID is available in the request object after authentication
@@ -30,7 +30,9 @@ const editAd = async (req, res) => {
     try {
         const adId = req.params.id;
         const cookId = req.user.userId;
-        const adData = req.body;
+        const adData = {
+            ...req.body
+        };
 
         const editAd = await adService.editAd(adId, cookId, adData);
         res.status(200).json({ message: 'Η αγγελία ενημερώθηκε!', ad: editAd });
@@ -45,8 +47,8 @@ const deleteAd = async (req, res) => {
         const adId = req.params.id;
         const cookId = req.user.userId;
 
-        const deleteAD = await adService.deleteAd(adId, cookId);
-        res.status(200).json({message: 'Η αγγελία διαγράφηκε!', ad: deleteAD});
+        const deleteAd = await adService.deleteAd(adId, cookId);
+        res.status(200).json({message: 'Η αγγελία διαγράφηκε!', ad: deleteAd});
     } catch (error) {
         console.error(error);
         res.status(500).json({ error: 'Αποτυχία διαγραφής αγγελίας', message: error.message });

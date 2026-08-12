@@ -1,5 +1,5 @@
 const validateSchema = (schema) => {
-    return (req, res, necxt) => {
+    return (req, res, next) => {
         const { error, value} = schema.validate(req.body, { abortEarly: false });
         
         if (error) {
@@ -11,7 +11,7 @@ const validateSchema = (schema) => {
         };
 
         req.body = value;
-        necxt();
+        next();
     };
 };
 

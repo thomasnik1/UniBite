@@ -2,8 +2,9 @@ const { DataTypes } = require('sequelize');
 const sequelize = require('../configuration/database');
 
 const Ad = sequelize.define('Ad', {
-    cook_id: {
+    cookId: {
         type: DataTypes.INTEGER,
+        field: 'cook_id',
         allowNull: false
     },
     title: {
@@ -20,12 +21,14 @@ const Ad = sequelize.define('Ad', {
         type: DataTypes.INTEGER,
         allowNull: false
     },
-    pickup_location: {
+    pickupLocation: {
         type: DataTypes.STRING,
+        field: 'pickup_location',
         allowNull: false
     },
-    pickup_time: {
+    pickupTime: {
         type: DataTypes.DATE,
+        field: 'pickup_time',
         allowNull: false
     },
     status: {

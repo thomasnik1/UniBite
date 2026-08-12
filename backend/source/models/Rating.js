@@ -2,12 +2,14 @@ const { DataTypes } = require('sequelize');
 const sequelize = require('../configuration/database');
 
 const Rating = sequelize.define('Rating', {
-    consumer_id: {
+    consumerId: {
         type: DataTypes.INTEGER,
+        field: 'consumer_id',
         allowNull: false
     },
-    request_id: {
+    requestId: {
         type: DataTypes.INTEGER,
+        field: 'request_id',
         allowNull: false
     },
     score: {

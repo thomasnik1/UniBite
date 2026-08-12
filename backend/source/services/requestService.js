@@ -3,59 +3,68 @@ const { Op } = require('sequelize');
 
 const createRequest =  async (requestData) => {
 
-    const { userId, adId , portions } = requestData;
+    const newRequestData = {
+        ...requestData
+    };
 
-    const ad = await Ad.findByPk(adId);
-    const user = await User.findByPk(userId);
-
+    console.log(newRequestData);
+    const ad = await Ad.findByPk(newRequestData.adId);
+    const user = await User.findByPk(newRequestData.consumerId);
+    console.log(user);
     if (!ad) {
         throw new Error('Ad not found');
     };
 
-    if (user.id === ad.cook_id) {
+    if (user.id === ad.cookId) {
         throw new Error('You cannot request your own ad');
     };
 
-    if (user.credits < portions) {
+    if (user.credits < newRequestData.portions) {
         throw new Error('Not enough credits');
     };
 
-    if (ad.portions < portions) {
+    if (ad.portions < newRequestData.portions) {
         throw new Error('Not enough portions available');
     };
 
-    if (portions <= 0) {
+    if (newRequestData.portions <= 0) {
         throw new Error('Portions must be greater than 0');
     };
 
     const newRequest = await Request.create({
-        consumer_id: userId,
-        ad_id: adId,
-        portions: portions,
+        consumerId: newRequestData.consumerId,
+        adId: newRequestData.adId,
+        portions: newRequestData.portions,
         status: 'pending'
     });
 
-    await user.update({ credits: user.credits - portions });
+    await user.update({ credits: user.credits - newRequestData.portions });
 
     return {
         newRequest: {
             id: newRequest.id,
-            consumer_id: newRequest.consumer_id,
+            consumerId: newRequest.consumerId,
             portions: newRequest.portions,
-            ad_id: newRequest.ad_id,
+            adId: newRequest.adId,
             status: newRequest.status   
         }
     };
 };
 
-const acceptRequest = async (requestId) => {
-    const request = await Request.findByPk(requestId);
+const acceptRequest = async (acceptRequestData) => {
+   
+    const newAcceptRequestData = {
+        ...acceptRequestData
+    };
+
+    const request = await Request.findByPk(newAcceptRequestData.requestId);
+
 
     if (!request) {
         throw new Error('Request not found');
     };
 
-    const ad = await Ad.findByPk(request.ad_id);
+    const ad = await Ad.findByPk(request.adId);
 
     if (!ad) {
         throw new Error('Ad not found');
@@ -69,6 +78,11 @@ const acceptRequest = async (requestId) => {
         throw new Error('Not enough portions available');
     };
 
+    if (newAcceptRequestData.cookId !== ad.cookId) {
+        throw new Error('Unauthorized to accept this request');
+    };
+
+
     await request.update({ status: 'approved' });
     await ad.update({ portions: ad.portions - request.portions });
 
@@ -79,6 +93,7 @@ const acceptRequest = async (requestId) => {
 };
 
 const rejectRequest = async (requestId) => {
+    
     const request = await Request.findByPk(requestId);
     const user = await User.findByPk(request.consumer_id);
 
@@ -116,24 +131,22 @@ const confirmPickup = async (requestData) => {
     return;
 };
 
-const showRequests = async (user_id) => {
-    // 1. Προαιρετικός έλεγχος (για να ξέρουμε ότι ο χρήστης υπάρχει όντως)
+const showPendingRequests = async (user_id) => {
     const user = await User.findByPk(user_id);
 
     if(!user) {
         throw new Error('User does not exist');
     }
 
-    // 2. Η βελτιστοποιημένη κλήση στη βάση (INNER JOIN)
     const requests = await Request.findAll({
         where: {
-            status: 'pending' // Θέλουμε μόνο τα εκκρεμή αιτήματα
+            status: 'pending'
         },
         include: [{
             model: Ad,
-            as: 'ad', // Προσοχή: Πρέπει να ταιριάζει με το 'as' που έχεις στο Request.belongsTo(Ad)
+            as: 'ad', 
             where: {
-                cook_id: user.id // ΕΔΩ ΕΙΝΑΙ ΤΟ ΚΛΕΙΔΙ!
+                cook_id: user.id 
             }
         }]
     });
@@ -146,5 +159,5 @@ module.exports = {
     acceptRequest,
     rejectRequest,
     confirmPickup,
-    showRequests
+    showPendingRequests
 };

@@ -2,7 +2,6 @@ const { Ad, Request, User } = require('../models/models');
 const { Op } = require('sequelize');
 
 const getAllActiveAds = async () => {
-    // Φέρνει όλες τις αγγελίες με status 'active'
     return await Ad.findAll({
         where: { status: 'active' },
         order: [['created_at', 'DESC']]
@@ -10,30 +9,30 @@ const getAllActiveAds = async () => {
 };
 
 const createAd = async (adData) => {
-    const newadData = {
+    const newAdData = {
         ...adData
     }
     
     const newAd = await Ad.create({
-        cook_id: newadData.cook_Id,
-        title: newadData.title,
-        description: newadData.description,
-        allergens: newadData.allergens,
-        portions: newadData.portions,
-        pickup_location: newadData.pickup_location,
-        pickup_time: newadData.pickup_time
+        cookId: newAdData.cookId,
+        title: newAdData.title,
+        description: newAdData.description,
+        allergens: newAdData.allergens,
+        portions: newAdData.portions,
+        pickupLocation: newAdData.pickupLocation,
+        pickupTime: newAdData.pickupTime
     });
 
     return {
         newAd: {
             id: newAd.id,
-            cook_id: newAd.cook_id,
+            cookId: newAd.cookId,
             title: newAd.title,
             description: newAd.description,
             allergens: newAd.allergens,
             portions: newAd.portions,
-            pickup_location: newAd.pickup_location,
-            pickup_time: newAd.pickup_time,
+            pickupLocation: newAd.pickupLocation,
+            pickupTime: newAd.pickupTime,
             status: newAd.status
         }
     };
@@ -52,7 +51,7 @@ const editAd = async (adId,cookId, adData) => {
 
     await ad.update(adData);
     return ad;
-}
+};
 
 const deleteAd = async (adId, cookId) => {
     const ad = await Ad.findByPk(adId);
@@ -67,7 +66,7 @@ const deleteAd = async (adId, cookId) => {
 
     await ad.update({ status: 'deleted' });
     return ad;
-}
+};
 
 const deleteExpiredAds = async() => {
 
@@ -87,7 +86,7 @@ const deleteExpiredAds = async() => {
     );
     console.log(`Deleted ${expiredAds[0]} expired ads.`);
 
-}
+};
 
 module.exports = {
     getAllActiveAds,

@@ -2,11 +2,12 @@ const ratingService = require('../services/ratingService');
 
 const createRating = async (req, res) => {
     try {
-        const result = await ratingService.createRating({
-            consumer_id : req.user.userId,
-            request_id : req.body.requestId,
-            score : req.body
-        });
+        const raterId = req.userId;
+        const newRatingData = {
+            consumer_id: raterId,
+            ...req.body
+        }
+        const result = await ratingService.createRating(newRatingData);
 
         res.status(201).json({ message: 'Η αξιολόγηση δημιουργήθηκε!', rating: result });
     }

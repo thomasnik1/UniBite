@@ -3,9 +3,8 @@ const requestService = require('../services/requestService');
 const createRequest = async (req, res) => {
     try {
         const request = await requestService.createRequest({
-            userId: req.user.userId,
-            adId: req.body.adId,
-            portions: req.body.portions
+            consumerId: req.user.userId,
+            ...req.body
         });
         res.status(201).json({ message: 'Η αίτηση δημιουργήθηκε!', request: request });
     } catch (error) {
@@ -16,8 +15,12 @@ const createRequest = async (req, res) => {
 
 const acceptRequest = async (req, res) => {
     try {
-        const request = req.params.id
-        const result = await requestService.acceptRequest(request);
+        const acceptRequestData = {
+            requestId: req.params.id,
+            cookId: req.user.userId
+        };
+
+        const result = await requestService.acceptRequest(acceptRequestData);
         res.status(200).json({ message: 'Η αίτηση έγινε αποδεκτή!', request: result });
     } catch (error) {
         console.error(error);
@@ -51,11 +54,11 @@ const confirmPickup = async (req, res) => {
     }
 };
 
-const showRequests = async (req, res) => {
+const showPendingRequests = async (req, res) => {
     try {
         const user = req.user.userId;
-        const result = await requestService.showRequests(user);
-        res.status(200).json({ message: 'Active requests' });
+        const result = await requestService.showPendingRequests(user);
+        res.status(200).json({ message: 'Pending requests', result });
     } catch (error) {
         console.error(error);
         res.status(500).json({ message: 'Failed to load requests', error: error.message })
@@ -68,5 +71,5 @@ module.exports = {
     acceptRequest,
     rejectRequest,
     confirmPickup,
-    showRequests
+    showPendingRequests
 };          
