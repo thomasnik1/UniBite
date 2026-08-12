@@ -40,8 +40,8 @@ const confirmPickup = async (req, res) => {
     try {
         const result = await requestService.confirmPickup({
         cook_id: req.user.userId,
-        ad_id : req.body.adId,
-        request_id : req.body.requestId
+        request: req.params.id,
+        ad_id : req.body.adId
         });
 
         res.status(200).json({ message: 'Η μεριδα παρεληφθη επιτυχως', request: result });
@@ -51,9 +51,22 @@ const confirmPickup = async (req, res) => {
     }
 };
 
+const showRequests = async (req, res) => {
+    try {
+        const user = req.user.userId;
+        const result = await requestService.showRequests(user);
+        res.status(200).json({ message: 'Active requests' });
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ message: 'Failed to load requests', error: error.message })
+    }
+
+};
+
 module.exports = {
     createRequest,
     acceptRequest,
     rejectRequest,
-    confirmPickup
+    confirmPickup,
+    showRequests
 };          

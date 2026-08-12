@@ -1,7 +1,4 @@
-const Ad = require('../models/Ad');
-const Rating = require('../models/Rating');
-const Request = require('../models/Request');
-const User =  require('../models/User');
+const { Ad, Request, User } = require('../models/models');
 const { Op } = require('sequelize');
 
 const createRating = async (ratingData) => {

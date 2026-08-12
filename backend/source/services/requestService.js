@@ -1,6 +1,4 @@
-const Ad = require('../models/Ad');
-const Request = require('../models/Request');
-const User = require('../models/User');
+const { Ad, Request, User } = require('../models/models');
 const { Op } = require('sequelize');
 
 const createRequest =  async (requestData) => {
@@ -98,7 +96,7 @@ const rejectRequest = async (requestId) => {
 };
 
 const confirmPickup = async (requestData) => {
-    const { cook_id , ad_id, request_id } = requestData;
+    const { cook_id , request_id, ad_id } = requestData;
 
     const ad = await Ad.findByPk(ad_id);
     const cook = await User.findByPk(cook_id);
@@ -116,11 +114,37 @@ const confirmPickup = async (requestData) => {
 
     await request.update({ is_picked_up: 1 });
     return;
+};
+
+const showRequests = async (user_id) => {
+    // 1. Προαιρετικός έλεγχος (για να ξέρουμε ότι ο χρήστης υπάρχει όντως)
+    const user = await User.findByPk(user_id);
+
+    if(!user) {
+        throw new Error('User does not exist');
+    }
+
+    // 2. Η βελτιστοποιημένη κλήση στη βάση (INNER JOIN)
+    const requests = await Request.findAll({
+        where: {
+            status: 'pending' // Θέλουμε μόνο τα εκκρεμή αιτήματα
+        },
+        include: [{
+            model: Ad,
+            as: 'ad', // Προσοχή: Πρέπει να ταιριάζει με το 'as' που έχεις στο Request.belongsTo(Ad)
+            where: {
+                cook_id: user.id // ΕΔΩ ΕΙΝΑΙ ΤΟ ΚΛΕΙΔΙ!
+            }
+        }]
+    });
+
+    return requests;
 }
 
 module.exports = {
     createRequest,
     acceptRequest,
     rejectRequest,
-    confirmPickup
+    confirmPickup,
+    showRequests
 };

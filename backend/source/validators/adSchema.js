@@ -19,7 +19,6 @@ const editAdSchema = Joi.object(baseAdSchema).min(1).options({
 });
 
 module.exports = {
-    baseAdSchema,
     createAdSchema,
     editAdSchema
 };

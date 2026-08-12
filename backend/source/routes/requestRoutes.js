@@ -6,6 +6,7 @@ const authenticateToken = require('../middlewares/authMiddleware');
 router.post('/create' , authenticateToken, requestController.createRequest);
 router.put('/accept/:id', authenticateToken, requestController.acceptRequest);
 router.put('/reject/:id', authenticateToken, requestController.rejectRequest);
-router.put('/confirm', authenticateToken,requestController.confirmPickup);
+router.put('/confirm/:id', authenticateToken,requestController.confirmPickup);
+router.get('/show', authenticateToken, requestController.showRequests);
 
 module.exports = router;

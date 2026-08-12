@@ -1,4 +1,4 @@
-const Ad = require('../models/Ad');
+const { Ad, Request, User } = require('../models/models');
 const { Op } = require('sequelize');
 
 const getAllActiveAds = async () => {
