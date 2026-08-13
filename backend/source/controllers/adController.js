@@ -1,9 +1,9 @@
 const adService = require('../services/adService');
 
-const getAds = async (req, res) => {
+const getAllActiveAds = async (req, res) => {
     try {
         const ads = await adService.getAllActiveAds();
-        res.json(ads);
+        res.status(200).json(ads);
     } catch (error) {
         console.error(error);
         res.status(500).json({ error: 'Αποτυχία λήψης αγγελιών', message: error.message });
@@ -58,7 +58,7 @@ const deleteAd = async (req, res) => {
 };
 
 module.exports = {
-    getAds,
+    getAllActiveAds,
     createAd,
     editAd,
     deleteAd

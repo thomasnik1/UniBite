@@ -6,7 +6,7 @@ const createUser = async (req, res) => {
             ...req.body
         };
 
-        const result = await userService.createUser(req.body);
+        const result = await userService.createUser(createUserData);
         res.status(201).json({ message: 'Ο χρήστης δημιουργήθηκε!', result });   
     } catch (error) {
         console.error(error);
@@ -16,13 +16,12 @@ const createUser = async (req, res) => {
 
 const loginUser = async (req, res) => {
     try {
-        const result = await userService.loginUser(req.body);
-        res.status(200).json({
-            message: 'Επιτυχής σύνδεση!', 
-            user: result.user,
-            token: result.token,
-            refreshToken: result.refreshToken
-         });
+        const loginUserData = {
+            ...req.body
+       };
+
+        const result = await userService.loginUser(loginUserData);
+        res.status(200).json({ message: 'Επιτυχής σύνδεση!', result });
     } catch (error) {
         console.error(error);
         res.status(401).json({ error: 'Αποτυχία σύνδεσης χρήστη' });

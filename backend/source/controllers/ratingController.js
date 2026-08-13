@@ -3,7 +3,7 @@ const ratingService = require('../services/ratingService');
 const createRating = async (req, res) => {
     try {
         const newRatingData = {
-            consumer_id: req.user.userId,
+            consumerId: req.user.userId,
             ...req.body
         }
         const result = await ratingService.createRating(newRatingData);
@@ -34,10 +34,13 @@ const editRating = async (req, res) => {
 
 const deleteRating = async (req, res) => {
     try {
-        const rating_id = req.params.id;
-        const user_id = req.user.userId;
 
-        const result = await ratingService.deleteRating( rating_id, user_id );
+        const deleteRatingData = {
+            ratingId: req.params.id,
+            raterId: req.user.userId
+        };
+
+        const result = await ratingService.deleteRating(deleteRatingData);
         res.status(200).json({ message: 'Η αγιολογηση διαγραφθηκε επιτυχως', rating: result });
     } catch (error) {
         console.log(error);

@@ -1,15 +1,14 @@
 const { Ad, Request, User, Rating } = require('../models/models');
 const { Op } = require('sequelize');
+const AppError = require('../utilities/AppError');
 
-const createRating = async (ratingData) => {
-    const { consumer_id, request_id, rating_score } = ratingData;
-
-    const request = await Request.findByPk(request_id);
+const createRating = async ({ consumerId, requestId, ratingScore}) => {
+    const request = await Request.findByPk(requestId);
     if (!request) {
         throw new Error('Request not found');
     };
 
-    if (request.consumer_id !== consumer_id) {
+    if (request.consumerId !== consumerId) {
         throw new Error('Unauthorized to rate this request');
     };
 
@@ -20,8 +19,8 @@ const createRating = async (ratingData) => {
     const existingRating = await Rating.findOne({
         where: {
             [Op.and]: [
-                { consumer_id: request.consumer_id },
-                { request_id: request_id }
+                { consumerId: request.consumerId },
+                { requestId: requestId }
             ]
         }
     });
@@ -31,9 +30,9 @@ const createRating = async (ratingData) => {
     }
 
     const newRating = await Rating.create({
-        consumer_id,
-        request_id,
-        rating_score
+        consumerId,
+        requestId,
+        ratingScore
     });
 
     return newRating;
@@ -51,7 +50,7 @@ const editRating = async (editRatingData) => {
         throw new Error('Rating not found');
     };
 
-    if (rating.consumerId !== newEditRatingData.rater_id) {
+    if (rating.consumerId !== newEditRatingData.raterId) {
         throw new Error('Unauthorized to rate this request');
     };
 
@@ -60,14 +59,15 @@ const editRating = async (editRatingData) => {
     return editedRating;
 };
 
-const deleteRating = async ( rating_id, user_id ) => {
-    const rating = await Rating.findByPk(rating_id);
+const deleteRating = async ({ ratingId, raterId }) => {
+
+    const rating = await Rating.findByPk(ratingId);
 
     if (!rating) {
         throw new Error('Rating not found');
     };
 
-    if (rating.consumer_id !== user_id) {
+    if (rating.consumerId !== raterId) {
         throw new Error('Unauthorized to delete this request');
     };    
 

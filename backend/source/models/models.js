@@ -7,6 +7,7 @@ const sequelize = require('../configuration/database'); // Ή όπου αλλο�
 const User = require('./User');
 const Ad = require('./Ad');
 const Request = require('./Request');
+const Rating = require('./Rating');
 
 // 3. ΟΡΙΣΜΟΣ ΤΩΝ ΣΥΣΧΕΤΙΣΕΩΝ (Εδώ γίνεται η μαγεία!)
 
@@ -27,5 +28,6 @@ module.exports = {
     sequelize,
     User,
     Ad,
-    Request
+    Request,
+    Rating
 };

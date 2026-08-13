@@ -1,5 +1,6 @@
 const { Ad, Request, User } = require('../models/models');
 const { Op } = require('sequelize');
+const AppError = require('../utilities/AppError');
 
 const getAllActiveAds = async () => {
     return await Ad.findAll({
@@ -42,19 +43,14 @@ const editAd = async (editAdData) => {
     return ad;
 };
 
-const deleteAd = async (deleteAdData) => {
-
-    const newDeleteAdData = {
-        ...deleteAdData
-    };
-
-    const ad = await Ad.findByPk(newDeleteAdData.adId);
+const deleteAd = async ({ adId, cookId }) => {
+    const ad = await Ad.findByPk(adId);
 
     if (!ad) {
         throw new Error('Ad not found');
     }
 
-    if (ad.cook_id !== newDeleteAdData.cookId) {
+    if (ad.cookId !== cookId) {
         throw new Error('Unauthorized to delete this ad');
     }
 

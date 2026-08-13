@@ -1,5 +1,6 @@
 const { Ad, Request, User } = require('../models/models');
 const { Op } = require('sequelize');
+const AppError = require('../utilities/AppError');
 
 const createRequest =  async (requestData) => {
 
@@ -50,15 +51,10 @@ const createRequest =  async (requestData) => {
     };
 };
 
-const acceptRequest = async (acceptRequestData) => {
+const acceptRequest = async ({ requestId, cookId }) => {
    
-    const newAcceptRequestData = {
-        ...acceptRequestData
-    };
-
-    const request = await Request.findByPk(newAcceptRequestData.requestId);
+    const request = await Request.findByPk(requestId);
     const ad = await Ad.findByPk(request.adId);
-
 
     if (!request) {
         throw new Error('Request not found');
@@ -76,7 +72,7 @@ const acceptRequest = async (acceptRequestData) => {
         throw new Error('Not enough portions available');
     };
 
-    if (newAcceptRequestData.cookId !== ad.cookId) {
+    if (cookId !== ad.cookId) {
         throw new Error('Unauthorized to accept this request');
     };
 
@@ -89,13 +85,8 @@ const acceptRequest = async (acceptRequestData) => {
     return request;
 };
 
-const rejectRequest = async (rejectRequestData) => {
-    
-    const newRejectRequestData = {
-        ...rejectRequestData
-    };
-
-    const request = await Request.findByPk(newRejectRequestData.requestId);
+const rejectRequest = async ({ requestId, cookId }) => {
+    const request = await Request.findByPk(requestId);
     const ad = await Ad.findByPk(request.adId);
     const user = await User.findByPk(request.consumerId);
 
@@ -107,7 +98,7 @@ const rejectRequest = async (rejectRequestData) => {
         throw new Error('Request is not pending');
     };
 
-    if (ad.cookId !== newRejectRequestData.cookId) {
+    if (ad.cookId !== cookId) {
         throw new Error('Unauthorized to reject this request.')
     };
 
@@ -116,16 +107,11 @@ const rejectRequest = async (rejectRequestData) => {
     return request;
 };
 
-const confirmPickup = async (confirmPickupData) => {
-    const newConfirmPickupData = {
-        ...confirmPickupData
-    };
+const confirmPickup = async ({ cookId, requestId, adId }) => {
 
-    const ad = await Ad.findByPk(newConfirmPickupData.adId);
-    const cook = await User.findByPk(newConfirmPickupData.cookId);
-    const request = await Request.findByPk(newConfirmPickupData.requestId);
-
-    console.log(requestData);
+    const ad = await Ad.findByPk(adId);
+    const cook = await User.findByPk(cookId);
+    const request = await Request.findByPk(requestId);
 
     if(cook.id !== ad.cookId) {
         throw new Error('Unauthorized to confirm pickup');
@@ -160,12 +146,33 @@ const showPendingRequests = async (userId) => {
     });
 
     return requests;
-}
+};
+
+const showPastRequests = async (userId) => {
+    const user = await User.findByPk(userId);
+
+    if(!user) {
+        throw new Error('User does not exist');
+    }
+
+    const requests = await Request.findAll({
+        include: [{
+            model: Ad,
+            as: 'ad', 
+            where: {
+                cook_id: user.id 
+            }
+        }]
+    });
+
+    return requests;
+};
 
 module.exports = {
     createRequest,
     acceptRequest,
     rejectRequest,
     confirmPickup,
-    showPendingRequests
+    showPendingRequests,
+    showPastRequests
 };

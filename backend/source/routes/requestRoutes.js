@@ -8,5 +8,6 @@ router.put('/accept/:id', authenticateToken, requestController.acceptRequest);
 router.put('/reject/:id', authenticateToken, requestController.rejectRequest);
 router.put('/confirm/:id', authenticateToken,requestController.confirmPickup);
 router.get('/show', authenticateToken, requestController.showPendingRequests);
+router.get('/showPast', authenticateToken, requestController.showPastRequests);
 
 module.exports = router;

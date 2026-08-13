@@ -5,7 +5,7 @@ const authenticateToken  = require('../middlewares/authMiddleware');
 const { validateSchema } = require('../middlewares/validatorMiddleware');
 const adSchema = require('../validators/adSchema')
 
-router.get('/feed', adController.getAds);
+router.get('/feed', adController.getAllActiveAds);
 
 router.post(
     '/create', 

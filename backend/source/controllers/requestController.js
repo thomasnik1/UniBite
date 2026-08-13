@@ -71,10 +71,22 @@ const showPendingRequests = async (req, res) => {
 
 };
 
+const showPastRequests = async (req, res) => {
+    try {
+        const userId = req.user.userId;
+        const result = await requestService.showPastRequests(userId);
+        res.status(200).json({ message: 'Past requests', result });
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ message: 'Failed to load past requests', error: error.message })
+    }
+
+};
 module.exports = {
     createRequest,
     acceptRequest,
     rejectRequest,
     confirmPickup,
-    showPendingRequests
+    showPendingRequests,
+    showPastRequests
 };          

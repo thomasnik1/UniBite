@@ -12,9 +12,10 @@ const Rating = sequelize.define('Rating', {
         field: 'request_id',
         allowNull: false
     },
-    score: {
+    ratingScore: {
         type: DataTypes.INTEGER,
         allowNull: false,
+        field: 'score',
         validate: {
             min: 1,
             max: 5

@@ -2,11 +2,9 @@ const { Op } = require('sequelize');
 const { Ad, Request, User } = require('../models/models');
 const jwt = require('jsonwebtoken');
 const passwordService = require ('../services/passwordService');
+const AppError = require('../utilities/AppError');
 
-const createUser = async (createUserData) => {
-    const newCreateUserData = {
-        ...createUserData
-    }
+const createUser = async ({ username, password, email }) => {
 
     const existingUser = await User.findOne({
         where: {
@@ -19,9 +17,9 @@ const createUser = async (createUserData) => {
 
     if (existingUser) {
         if (existingUser.email === email) {
-            throw new Error('Email already exists');
+            throw new AppError('Email already exists', 418);
         }
-        else if (existingUser.username === username) {
+        else if (existingUser.username ===  username) {
             throw new Error('Username already exists');
         }
     }
@@ -62,9 +60,7 @@ const createUser = async (createUserData) => {
     };
 };
 
-const loginUser = async (userData) => {
-    const { username, password } = userData;
-
+const loginUser = async ({ username, password }) => {
     const user = await User.findOne({ where : { username } });
 
     if (!user) {
@@ -126,7 +122,7 @@ const refreshToken = async (refreshToken) => {
         throw new Error('User not found');
     }
 
-    const newToken =jwt.sign(
+    const newToken = jwt.sign(
         { userId: user.id, role: user.role },
         process.env.JWT_SECRET,
         { expiresIn: '3h' }
