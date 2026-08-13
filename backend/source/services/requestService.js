@@ -15,6 +15,10 @@ const createRequest =  async (requestData) => {
         throw new Error('Ad not found');
     };
 
+    if (ad.status !== 'active') {
+        throw new Error('Ad is no longer active');
+    }
+
     if (user.id === ad.cookId) {
         throw new Error('You cannot request your own ad');
     };
@@ -113,6 +117,9 @@ const confirmPickup = async ({ cookId, requestId, adId }) => {
     const cook = await User.findByPk(cookId);
     const request = await Request.findByPk(requestId);
 
+    console.log(ad);
+    console.log(cook);
+    console.log(request);
     if(cook.id !== ad.cookId) {
         throw new Error('Unauthorized to confirm pickup');
     };
@@ -121,7 +128,23 @@ const confirmPickup = async ({ cookId, requestId, adId }) => {
         throw new Error('Request is not approved');
     };
 
-    await request.update({ isPickedUp: 1 });
+    const pickupTime = new Date();
+    await request.update({ isPickedUp: 1 , pickupTime: pickupTime });
+    return;
+};
+
+const reportNoShow = async ({ cookId, requestId, adId }) => {
+
+    const ad = await Ad.findByPk(adId);
+    const cook = await User.findByPk(cookId);
+    const request = await Request.findByPk(requestId);
+    const consumer = await User.findByPk(request.consumerId);
+
+    if (cook.id !== ad.cookId) {
+        throw new Error('Unauthorized to report no show');
+    };
+
+    await consumer.update({ credits: consumer.credits + request.portions -1 });
     return;
 };
 
@@ -173,6 +196,7 @@ module.exports = {
     acceptRequest,
     rejectRequest,
     confirmPickup,
+    reportNoShow,
     showPendingRequests,
     showPastRequests
 };

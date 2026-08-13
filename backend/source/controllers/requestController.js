@@ -59,6 +59,22 @@ const confirmPickup = async (req, res) => {
     }
 };
 
+const reportNoShow = async (req, res) => {
+    try {
+        const reportNoShowData = {
+            cookId: req.user.userId,
+            requestId: req.params.id,
+            adId: req.body.adId
+        };
+
+        const result = await requestService.reportNoShow(reportNoShowData);
+        res.status(200).json({ message: 'User has succesfully been reported', request: result });
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ message: 'User report failed', error: error.message});
+    }
+};
+
 const showPendingRequests = async (req, res) => {
     try {
         const userId = req.user.userId;
@@ -87,6 +103,7 @@ module.exports = {
     acceptRequest,
     rejectRequest,
     confirmPickup,
+    reportNoShow,
     showPendingRequests,
     showPastRequests
 };          

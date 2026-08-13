@@ -51,7 +51,6 @@ const createUser = async ({ username, password, email }) => {
             id: newUser.id,
             username: newUser.username,
             email: newUser.email,
-            password : newUser.password,
             role: newUser.role,
             credits: newUser.credits
         },
@@ -111,10 +110,6 @@ const logoutUser = async (userId) => {
 const refreshToken = async (refreshToken) => {
 
     const decoded = jwt.verify(refreshToken, process.env.REFRESH_TOKEN_SECRET);
-
-    if (!decoded) {
-        throw new Error('Invalid refresh token');
-    }
 
     const user = await User.findByPk(decoded.userId);
     

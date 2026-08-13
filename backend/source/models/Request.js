@@ -25,6 +25,10 @@ const Request = sequelize.define('Request', {
         field: 'is_picked_up',
         defaultValue : 0,
         allowNull : false 
+    },
+    pickupTime: {
+        type: DataTypes.DATE,
+        field: 'pickup_time',
     }
 }, {
     tableName : 'requests',

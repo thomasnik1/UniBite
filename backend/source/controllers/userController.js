@@ -2,11 +2,7 @@ const userService = require('../services/userService');
 
 const createUser = async (req, res) => {
     try{
-        const createUserData = {
-            ...req.body
-        };
-
-        const result = await userService.createUser(createUserData);
+        const result = await userService.createUser(req.body);
         res.status(201).json({ message: 'Ο χρήστης δημιουργήθηκε!', result });   
     } catch (error) {
         console.error(error);
@@ -16,11 +12,7 @@ const createUser = async (req, res) => {
 
 const loginUser = async (req, res) => {
     try {
-        const loginUserData = {
-            ...req.body
-       };
-
-        const result = await userService.loginUser(loginUserData);
+        const result = await userService.loginUser(req.body);
         res.status(200).json({ message: 'Επιτυχής σύνδεση!', result });
     } catch (error) {
         console.error(error);

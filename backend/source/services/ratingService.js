@@ -4,6 +4,9 @@ const AppError = require('../utilities/AppError');
 
 const createRating = async ({ consumerId, requestId, ratingScore}) => {
     const request = await Request.findByPk(requestId);
+    const ad = await Ad.findByPk(request.adId);
+    const cook = await User.findByPk(ad.cookId);
+
     if (!request) {
         throw new Error('Request not found');
     };
@@ -35,6 +38,14 @@ const createRating = async ({ consumerId, requestId, ratingScore}) => {
         ratingScore
     });
 
+    if (ratingScore <= 3 ) {
+        await cook.update({ credit: cook.credit + 1 });
+    };
+
+    if (ratingScore > 3 ) {
+        await cook.update({ credit: cook.credit + 2});
+    };
+    
     return newRating;
 }
 
@@ -73,6 +84,12 @@ const deleteRating = async ({ ratingId, raterId }) => {
 
     const deleteRating = await rating.destroy();
 }
+
+// const noRatingPenalty = async() => {
+//     const ratingDate = new Date();
+//     ratingDate
+
+// };
 
 module.exports = {
     createRating,
