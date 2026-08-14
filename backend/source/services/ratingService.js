@@ -83,13 +83,7 @@ const deleteRating = async ({ ratingId, raterId }) => {
     };    
 
     const deleteRating = await rating.destroy();
-}
-
-// const noRatingPenalty = async() => {
-//     const ratingDate = new Date();
-//     ratingDate
-
-// };
+};
 
 module.exports = {
     createRating,

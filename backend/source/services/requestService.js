@@ -117,9 +117,6 @@ const confirmPickup = async ({ cookId, requestId, adId }) => {
     const cook = await User.findByPk(cookId);
     const request = await Request.findByPk(requestId);
 
-    console.log(ad);
-    console.log(cook);
-    console.log(request);
     if(cook.id !== ad.cookId) {
         throw new Error('Unauthorized to confirm pickup');
     };

@@ -21,14 +21,19 @@ const Request = sequelize.define('Request', {
         allowNull : false
     },
     isPickedUp : {
-        type : DataTypes.TINYINT,
+        type : DataTypes.BOOLEAN,
         field: 'is_picked_up',
-        defaultValue : 0,
+        defaultValue : 'false',
         allowNull : false 
     },
     pickupTime: {
         type: DataTypes.DATE,
         field: 'pickup_time',
+    },
+    penaltyApplied: {
+        type: DataTypes.BOOLEAN,
+        field: 'penalty_applied',
+        defaultValue: 'false'
     }
 }, {
     tableName : 'requests',

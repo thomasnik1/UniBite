@@ -3,24 +3,29 @@ const router = express.Router();
 const adController = require('../controllers/adController');
 const authenticateToken  = require('../middlewares/authMiddleware');
 const { validateSchema } = require('../middlewares/validatorMiddleware');
-const adSchema = require('../validators/adSchema')
+const { createAdSchema, editAdSchema, deleteAdSchema } = require('../validators/adSchema')
 
 router.get('/feed', adController.getAllActiveAds);
 
 router.post(
     '/create', 
     authenticateToken,
-    validateSchema(adSchema.createAdSchema),
+    validateSchema(createAdSchema),
     adController.createAd
 );
 
-router.put(
+router.patch(
     '/edit/:id',
-    validateSchema(adSchema.editAdSchema),
+    validateSchema(editAdSchema),
     authenticateToken,
     adController.editAd
 );
 
-router.delete('/delete/:id', authenticateToken, adController.deleteAd);
+router.delete(
+    '/delete/:id',
+    authenticateToken, 
+    validateSchema(deleteAdSchema),
+    adController.deleteAd
+);
 
 module.exports = router;

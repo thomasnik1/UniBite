@@ -1,15 +1,17 @@
 const Joi = require('joi');
 
-const baseUserSchema = Joi.object({
+const createUserSchema = Joi.object({
     username: Joi.string().min(1).max(25),
-    password: Joi.string()
+    email: Joi.string().email().min(1),
+    password: Joi.string().min(6)
+}).options({
+    presence: 'required'
 });
 
-const createUserSchema = baseUserSchema.append({
-    email: Joi.string().email()
-}).options({ presence: 'required' });
-
-const loginUserSchema = Joi.object(baseUserSchema.username, baseUserSchema.password).options({
+const loginUserSchema = Joi.object({
+    username: Joi.string().min(1).max(25),
+    password: Joi.string().min(6)
+}).options({
     presence: 'required'
 });
 

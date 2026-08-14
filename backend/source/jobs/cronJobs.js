@@ -1,11 +1,22 @@
 const { CronJob } = require('cron');
-const { deleteExpiredAds } = require('../services/adService');
-
-const job = new CronJob(
+const { deleteExpiredAds } = require('./deleteExpiredAdsJob');
+const { nonRatingPenalty } = require('./nonRatingPenalty')
+ 
+const expiredAdsJob = new CronJob(
     '0 * * * *',
     deleteExpiredAds,
     null,
     true,
     'Europe/Athens'
 );
-job.start();
+
+const nonRatingPenaltyJob = new CronJob(
+    '0 * * * *',
+    nonRatingPenalty,
+    null,
+    true,
+    'Europe/Athens'
+);
+
+expiredAdsJob.start();
+nonRatingPenaltyJob.start();
