@@ -1,122 +1,36 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from './assets/vite.svg'
-import heroImg from './assets/hero.png'
-import './App.css'
+import { BrowserRouter, Routes, Route, Link } from 'react-router-dom';
+import Login from './pages/Login';
+import Ads from './pages/Ads';
 
 function App() {
-  const [count, setCount] = useState(0)
-
   return (
-    <>
-      <section id="center">
-        <div className="hero">
-          <img src={heroImg} className="base" width="170" height="179" alt="" />
-          <img src={reactLogo} className="framework" alt="React logo" />
-          <img src={viteLogo} className="vite" alt="Vite logo" />
-        </div>
-        <div>
-          <h1>Get started</h1>
-          <p>
-            Edit <code>src/App.jsx</code> and save to test <code>HMR</code>
-          </p>
-        </div>
-        <button
-          type="button"
-          className="counter"
-          onClick={() => setCount((count) => count + 1)}
-        >
-          Count is {count}
-        </button>
-      </section>
+    // Το BrowserRouter "αγκαλιάζει" όλη την εφαρμογή για να λειτουργεί το routing
+    <BrowserRouter>
+      
+      {/* Ένα απλό μενού πλοήγησης που θα φαίνεται σε ΟΛΕΣ τις σελίδες */}
+      <nav style={{ padding: '20px', borderBottom: '1px solid #ccc', marginBottom: '20px' }}>
+        {/* ΠΡΟΣΟΧΗ: Χρησιμοποιούμε <Link> και ΟΧΙ <a> για να μην κάνει refresh η σελίδα! */}
+        <Link to="/login" style={{ marginRight: '15px' }}>Σύνδεση</Link>
+        <Link to="/ads">Αγγελίες</Link>
+      </nav>
 
-      <div className="ticks"></div>
-
-      <section id="next-steps">
-        <div id="docs">
-          <svg className="icon" role="presentation" aria-hidden="true">
-            <use href="/icons.svg#documentation-icon"></use>
-          </svg>
-          <h2>Documentation</h2>
-          <p>Your questions, answered</p>
-          <ul>
-            <li>
-              <a href="https://vite.dev/" target="_blank">
-                <img className="logo" src={viteLogo} alt="" />
-                Explore Vite
-              </a>
-            </li>
-            <li>
-              <a href="https://react.dev/" target="_blank">
-                <img className="button-icon" src={reactLogo} alt="" />
-                Learn more
-              </a>
-            </li>
-          </ul>
-        </div>
-        <div id="social">
-          <svg className="icon" role="presentation" aria-hidden="true">
-            <use href="/icons.svg#social-icon"></use>
-          </svg>
-          <h2>Connect with us</h2>
-          <p>Join the Vite community</p>
-          <ul>
-            <li>
-              <a href="https://github.com/vitejs/vite" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#github-icon"></use>
-                </svg>
-                GitHub
-              </a>
-            </li>
-            <li>
-              <a href="https://chat.vite.dev/" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#discord-icon"></use>
-                </svg>
-                Discord
-              </a>
-            </li>
-            <li>
-              <a href="https://x.com/vite_js" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#x-icon"></use>
-                </svg>
-                X.com
-              </a>
-            </li>
-            <li>
-              <a href="https://bsky.app/profile/vite.dev" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#bluesky-icon"></use>
-                </svg>
-                Bluesky
-              </a>
-            </li>
-          </ul>
-        </div>
-      </section>
-
-      <div className="ticks"></div>
-      <section id="spacer"></section>
-    </>
-  )
+      {/* Εδώ μέσα "ζουν" οι σελίδες μας. Ανάλογα το URL, φορτώνει το σωστό Element */}
+      <Routes>
+        {/* Όταν ο χρήστης πάει στο /login, δείξε το Component <Login /> */}
+        <Route path="/login" element={<Login />} />
+        
+        {/* Όταν ο χρήστης πάει στο /ads, δείξε το Component <Ads /> */}
+        <Route path="/ads" element={<Ads />} />
+        
+        {/* Μια προεπιλεγμένη σελίδα για όταν κάποιος μπαίνει στο σκέτο '/' */}
+        <Route path="/" element={<h2>Καλώς ήρθες στην εφαρμογή μας! Επιλέξτε κάτι από το μενού.</h2>} />
+        
+        {/* Αν βάλει άκυρο URL, του δείχνουμε ένα 404 */}
+        <Route path="*" element={<h2>404 - Η σελίδα δεν βρέθηκε! 😢</h2>} />
+      </Routes>
+      
+    </BrowserRouter>
+  );
 }
 
-export default App
+export default App;
