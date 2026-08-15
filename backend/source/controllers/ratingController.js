@@ -19,7 +19,7 @@ const createRating = async (req, res) => {
 const editRating = async (req, res) => {
     try {
         const editRatingData = {
-            raterId: req.user.userId,
+            consumerId: req.user.userId,
             ...req.body
         };
         
@@ -37,7 +37,7 @@ const deleteRating = async (req, res) => {
 
         const deleteRatingData = {
             ratingId: req.params.id,
-            raterId: req.user.userId
+            consumerId: req.user.userId
         };
 
         const result = await ratingService.deleteRating(deleteRatingData);

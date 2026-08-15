@@ -11,10 +11,34 @@ router.post('/create' ,
     requestController.createRequest
 );
 
-router.put('/accept/:id', authenticateToken, requestController.acceptRequest);
-router.put('/reject/:id', authenticateToken, requestController.rejectRequest);
-router.put('/confirm/:id', authenticateToken,requestController.confirmPickup);
-router.put('/report/:id', authenticateToken, requestController.reportNoShow)
+router.put(
+    '/accept/:id',
+    validateSchema(requestSchema.acceptRequestSchema),
+    authenticateToken, 
+    requestController.acceptRequest
+);
+
+router.put(
+    '/reject/:id',
+    validateSchema(requestSchema.rejectRequestSchema),
+    authenticateToken,
+    requestController.rejectRequest
+);
+
+router.put(
+    '/confirm/:id',
+    validateSchema(requestSchema.confirmPickupSchema),
+    authenticateToken,
+    requestController.confirmPickup
+);
+
+router.put(
+    '/report/:id',
+    validateSchema(requestSchema.reportNoShowSchema),
+    authenticateToken,
+    requestController.reportNoShow
+);
+
 router.get('/show', authenticateToken, requestController.showPendingRequests);
 router.get('/showPast', authenticateToken, requestController.showPastRequests);
 

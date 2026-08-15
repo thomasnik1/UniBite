@@ -26,6 +26,9 @@ const editAdSchema = Joi.object({
 
 const deleteAdSchema = Joi.object({
     id: Joi.number().integer().positive().required()
+}).options({
+    presence: 'required',
+    stripUnknown: true
 });
 
 module.exports = {

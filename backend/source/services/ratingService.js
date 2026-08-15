@@ -61,7 +61,7 @@ const editRating = async (editRatingData) => {
         throw new Error('Rating not found');
     };
 
-    if (rating.consumerId !== newEditRatingData.raterId) {
+    if (rating.consumerId !== newEditRatingData.consumerId) {
         throw new Error('Unauthorized to rate this request');
     };
 
@@ -70,7 +70,7 @@ const editRating = async (editRatingData) => {
     return editedRating;
 };
 
-const deleteRating = async ({ ratingId, raterId }) => {
+const deleteRating = async ({ ratingId, consumerId }) => {
 
     const rating = await Rating.findByPk(ratingId);
 
@@ -78,7 +78,7 @@ const deleteRating = async ({ ratingId, raterId }) => {
         throw new Error('Rating not found');
     };
 
-    if (rating.consumerId !== raterId) {
+    if (rating.consumerId !== consumerId) {
         throw new Error('Unauthorized to delete this request');
     };    
 

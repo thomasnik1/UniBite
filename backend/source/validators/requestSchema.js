@@ -1,19 +1,47 @@
 const Joi = require('joi')
 
-const baseRequestSchema = Joi.object({
-    adId: Joi.number().integer().min(1),
-    portions: Joi.number().integer().min(1),
+const createRequestSchema = Joi.object({
+    adId: Joi.number().integer().positive(),
+    portions: Joi.number().integer().positive()
+}).options({
+    presence: 'required',
+    stripUnknown: true
 });
 
-const createRequestSchema = baseRequestSchema.options({
-    presence: 'required'
+const acceptRequestSchema =Joi.object({
+    id: Joi.number().integer().positive()
+}).options({
+    presence: 'required',
+    stripUnknown: true
 });
 
-// const confirmPickup = Joi.object(
-//     baseRequestSchema.coid,
-//     baseRequestSchema.ad_id,
-//     )
+const rejectRequestSchema =Joi.object({
+    id: Joi.number().integer().positive()
+}).options({
+    presence: 'required',
+    stripUnknown: true
+});
+
+const confirmPickupSchema = Joi.object({
+    id: Joi.number().integer().positive(),
+    adId: Joi.number().integer().positive()
+}).options({
+    presence: 'required',
+    stripUnknown: true
+});
+
+const reportNoShowSchema = Joi.object({
+    id: Joi.number().integer().positive(),
+    adId: Joi.number().integer().positive()
+}).options({
+    presence: 'required',
+    stripUnknown: true
+});
 
 module.exports = {
-    createRequestSchema
+    createRequestSchema,
+    acceptRequestSchema,
+    rejectRequestSchema,
+    confirmPickupSchema,
+    reportNoShowSchema
 };
