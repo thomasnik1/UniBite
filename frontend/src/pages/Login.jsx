@@ -1,6 +1,8 @@
-import { useState } from 'react';
+import { useState, useContext } from 'react';
 import { useNavigate } from 'react-router-dom';
 import api from '../services/api'; // Εισάγουμε το ρυθμισμένο Axios
+import { AuthContext } from '../context/AuthContext'; 
+
 
 function Login() {
     // 1. Τα State (η "μνήμη" του component)
@@ -9,6 +11,7 @@ function Login() {
     const [error, setError] = useState(''); // Για να δείχνουμε τα λάθη από το backend
     
     const navigate = useNavigate();
+    const { login } = useContext(AuthContext); 
 
     // 2. Η συνάρτηση που τρέχει όταν πατάμε "Σύνδεση"
     const handleLogin = async (e) => {
@@ -22,13 +25,13 @@ function Login() {
                 username: username,
                 password: password
             });
+            const token = response.data.token || response.data.result?.token; 
 
             // 4. Αν πετύχει, παίρνουμε το Token από το response
             // (Προσάρμοσε το response.data.token ανάλογα με το πώς το στέλνει το δικό σου Backend)
-            const token = response.data.token; 
 
             // 5. Το αποθηκεύουμε στο Local Storage του browser για να μην το χάσουμε σε refresh
-            localStorage.setItem('token', token);
+            login(token);
 
             console.log('Επιτυχής σύνδεση! Το token αποθηκεύτηκε.');
 

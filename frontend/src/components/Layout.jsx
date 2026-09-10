@@ -30,23 +30,28 @@ function Layout() {
                     <Navbar.Toggle aria-controls="basic-navbar-nav" />
                     <Navbar.Collapse id="basic-navbar-nav">
                         <Nav className="ms-auto">
-                            
-                            <Nav.Link as={Link} to="/ads">Αγγελίες</Nav.Link>
-                            
-                            {isLoggedIn && (
-                                <Nav.Link as={Link} to="/create-ad">Νέα Αγγελία</Nav.Link>
-                            )}
 
-                            {!isLoggedIn && location.pathname !== '/login' && (
-                                <Nav.Link as={Link} to="/login">Σύνδεση</Nav.Link>
+                            {isLoggedIn ? (
+                                /* ----- ΤΙ ΒΛΕΠΕΙ Ο ΣΥΝΔΕΔΕΜΕΝΟΣ ΧΡΗΣΤΗΣ ----- */
+                                <>
+                                    <Nav.Link as={Link} to="/ads">Αγγελίες</Nav.Link>
+                                    <Nav.Link as={Link} to="/ads/create">Νέα Αγγελία</Nav.Link>
+                                    <Button 
+                                        variant="outline-light" 
+                                        size="sm" 
+                                        className="ms-3" 
+                                        onClick={handleLogout}
+                                    >
+                                        Αποσύνδεση
+                                    </Button>
+                                </>
+                            ) : (
+                                /* ----- ΤΙ ΒΛΕΠΕΙ Ο ΕΠΙΣΚΕΠΤΗΣ ----- */
+                                <>
+                                    <Nav.Link as={Link} to="/login">Σύνδεση</Nav.Link>
+                                    <Nav.Link as={Link} to="/create">Εγγραφή</Nav.Link>
+                                </>
                             )}
-
-                            {isLoggedIn && (
-                                <Button variant="outline-light" size="sm" className="ms-2" onClick={handleLogout}>
-                                    Αποσύνδεση
-                                </Button>
-                            )}
-                            
                         </Nav>
                     </Navbar.Collapse>
                 </Container>
