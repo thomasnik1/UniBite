@@ -5,7 +5,8 @@ const createAdSchema = Joi.object({
     description: Joi.string().max(500).allow('').optional(),
     allergens: Joi.string().max(200).allow('').optional(),
     portions: Joi.number().integer().positive(),
-    pickupLocation: Joi.string().max(200),
+    latitude: Joi.number().precision(8).required(),
+    longtitude: Joi.number().precision(8).required(),
     pickupTime: Joi.date().greater('now')
 }).options({
     presence: 'required',
@@ -17,7 +18,8 @@ const editAdSchema = Joi.object({
     description: Joi.string().max(500).allow(''),
     allergens: Joi.string().max(200).allow(''),
     portions: Joi.number().integer().positive(),
-    pickupLocation: Joi.string().max(200),
+    latitude: Joi.number().precision(8).required(),
+    longtitude: Joi.number().precision(8).required(),
     pickupTime: Joi.date().greater('now')
 }).min(1)
 .options({

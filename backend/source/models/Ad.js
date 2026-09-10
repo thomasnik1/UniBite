@@ -21,10 +21,13 @@ const Ad = sequelize.define('Ad', {
         type: DataTypes.INTEGER,
         allowNull: false
     },
-    pickupLocation: {
-        type: DataTypes.STRING,
-        field: 'pickup_location',
-        allowNull: false
+    latitude: {
+        type: DataTypes.DECIMAL(10,8),
+        allowNull: false  
+    },
+    longtitude: {
+        type: DataTypes.DECIMAL(11,8),
+        allowNull: false  
     },
     pickupTime: {
         type: DataTypes.DATE,
