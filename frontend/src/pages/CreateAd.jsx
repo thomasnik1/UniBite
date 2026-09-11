@@ -1,39 +1,66 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Container, Card, Form, Button, Alert } from 'react-bootstrap';
+import { Container, Card, Form, Button, Alert, Row, Col } from 'react-bootstrap';
 import api from '../services/api'; 
+
+// 1. Εισάγουμε τα εργαλεία του χάρτη!
+import { MapContainer, TileLayer, Marker, useMapEvents } from 'react-leaflet';
 
 function CreateAd() {
     const [title, setTitle] = useState('');
     const [portions, setPortions] = useState(1);
-    const [pickupLocation, setPickupLocation] = useState('');
+    const [pickupLocationDetails, setPickupLocationDetails] = useState('');
     const [pickupTime, setPickupTime] = useState(new Date());
     const [error, setError] = useState('');
     
+    // 2. ΝΕΟ STATE: Κρατάει τις συντεταγμένες (ξεκινάει από Σύνταγμα)
+    const [position, setPosition] = useState({ lat: 37.9753, lng: 23.7361 });
+    
     const navigate = useNavigate();
+
+    // 3. Η μαγική συνάρτηση που "ακούει" τα κλικ πάνω στον χάρτη
+    function LocationMarker() {
+        useMapEvents({
+            click(e) {
+                // Όταν κάνεις κλικ, παίρνει το ακριβές σημείο και αλλάζει το state
+                setPosition(e.latlng);
+            },
+        });
+
+        // Εμφανίζει την πινέζα στο σημείο που έχουμε αποθηκεύσει
+        return position === null ? null : (
+            <Marker position={position}></Marker>
+        );
+    }
 
     const handleSubmit = async (e) => {
         e.preventDefault();
         setError('');
 
         try {
-            // Προσοχή: Βάλε το σωστό endpoint του backend σου για δημιουργία αγγελίας!
             await api.post('/ads/create', {
                 title,
                 portions: Number(portions),
-                pickupLocation: pickupLocation,
-                pickupTime: pickupTime.toISOString() // Στέλνουμε το χρόνο σε ISO format
+                // 4. Προσθέτουμε τις συντεταγμένες για το Backend
+                latitude: position.lat,
+                longitude: position.lng,
+                pickupLocationDetails: pickupLocationDetails,
+                pickupTime: pickupTime.toISOString()
             });
 
-            // Μόλις φτιαχτεί η αγγελία, τον στέλνουμε πίσω στη λίστα με τις αγγελίες
             navigate('/ads');
         } catch (err) {
-            setError('Αποτυχία δημιουργίας αγγελίας. Δοκιμάστε ξανά.');
+            // Βελτιωμένη διαχείριση σφαλμάτων για να βλέπεις τι "χτυπάει" στο Joi
+            if (err.response && err.response.data && err.response.data.error) {
+                setError(`Λάθος από το Backend: ${err.response.data.error}`);
+            } else {
+                setError('Αποτυχία δημιουργίας αγγελίας. Δοκιμάστε ξανά.');
+            }
         }
     };
 
     return (
-        <Container className="mt-5" style={{ maxWidth: '600px' }}>
+        <Container className="mt-5 mb-5" style={{ maxWidth: '600px' }}>
             <Card className="shadow-sm">
                 <Card.Body>
                     <h3 className="text-center mb-4">Δημιουργία Νέας Αγγελίας 🍳</h3>
@@ -50,35 +77,65 @@ function CreateAd() {
                             />
                         </Form.Group>
 
-                        <Form.Group className="mb-3">
-                            <Form.Label>Αριθμός Μερίδων</Form.Label>
+                        {/* Έβαλα τις Μερίδες και τον Χρόνο σε μία σειρά (Row) για να εξοικονομήσουμε χώρο */}
+                        <Row>
+                            <Col md={6}>
+                                <Form.Group className="mb-3">
+                                    <Form.Label>Αριθμός Μερίδων</Form.Label>
+                                    <Form.Control 
+                                        type="number" 
+                                        min="1"
+                                        value={portions}
+                                        onChange={(e) => setPortions(e.target.value)}
+                                        required 
+                                    />
+                                </Form.Group>
+                            </Col>
+                            <Col md={6}>
+                                <Form.Group className="mb-3">
+                                    <Form.Label>Χρόνος Παραλαβής</Form.Label>
+                                    <Form.Control 
+                                        type="datetime-local" 
+                                        value={pickupTime.toISOString().slice(0,16)}
+                                        onChange={(e) => setPickupTime(new Date(e.target.value))}
+                                        required 
+                                    />
+                                </Form.Group>
+                            </Col>
+                        </Row>
+
+                        <Form.Group className="mb-4">
+                            <Form.Label>Οδός / Λεπτομέρειες Παραλαβής</Form.Label>
                             <Form.Control 
-                                type="number" 
-                                min="1"
-                                value={portions}
-                                onChange={(e) => setPortions(e.target.value)}
+                                type="text"
+                                placeholder="π.χ. Ερμού 15, 3ος όροφος" 
+                                value={pickupLocationDetails}
+                                onChange={(e) => setPickupLocationDetails(e.target.value)}
                                 required 
                             />
                         </Form.Group>
 
+                        {/* 5. Ο ΧΑΡΤΗΣ ΕΠΙΛΟΓΗΣ */}
                         <Form.Group className="mb-4">
-                            <Form.Label>Περιοχή Παραλαβής</Form.Label>
-                            <Form.Control 
-                                type="text" 
-                                value={pickupLocation}
-                                onChange={(e) => setPickupLocation(e.target.value)}
-                                required 
-                            />
-                        </Form.Group>
-
-                        <Form.Group className="mb-4">
-                            <Form.Label>Χρόνος Παραλαβής</Form.Label>
-                            <Form.Control 
-                                type="datetime-local" 
-                                value={pickupTime.toISOString().slice(0,16)}
-                                onChange={(e) => setPickupTime(new Date(e.target.value))}
-                                required 
-                            />
+                            <Form.Label>
+                                <strong>Ακριβές Σημείο στον Χάρτη</strong> <br/>
+                                <small className="text-muted">(Κάνε κλικ στον χάρτη για να επιλέξεις το σημείο)</small>
+                            </Form.Label>
+                            
+                            <div style={{ borderRadius: '8px', overflow: 'hidden', border: '1px solid #ced4da' }}>
+                                <MapContainer 
+                                    center={[37.9753, 23.7361]} 
+                                    zoom={14} 
+                                    style={{ height: '300px', width: '100%' }}
+                                >
+                                    <TileLayer
+                                        attribution='&copy; OpenStreetMap'
+                                        url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+                                    />
+                                    {/* Καλούμε το custom Component μας για το κλικ */}
+                                    <LocationMarker />
+                                </MapContainer>
+                            </div>
                         </Form.Group>
 
                         <Button variant="success" type="submit" className="w-100">

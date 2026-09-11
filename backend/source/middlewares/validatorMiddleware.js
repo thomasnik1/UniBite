@@ -1,6 +1,6 @@
-const validateSchema = (schema) => {
+const validateSchema = (schema, property = 'body') => {
     return (req, res, next) => {
-        const { error, value } = schema.validate(req.body, { abortEarly: false });
+        const { error, value } = schema.validate(req[property], { abortEarly: false });
         
         if (error) {
             const errorMessages = error.details.map((err) => err.message);
@@ -10,7 +10,7 @@ const validateSchema = (schema) => {
             });
         };
 
-        req.body = value;
+        req[property] = value;
         next();
     };
 };

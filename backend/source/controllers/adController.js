@@ -57,9 +57,22 @@ const deleteAd = async (req, res) => {
     
 };
 
+const getMyAds = async (req,res) => {
+    try {
+        const cookId = req.user.userId;
+        const myAds = await adService.getMyAds(cookId);
+        res.status(200).json(myAds);
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ error: 'Error fetching your ads',message: error.message });
+    }
+
+};
+
 module.exports = {
     getAllActiveAds,
     createAd,
     editAd,
-    deleteAd
+    deleteAd,
+    getMyAds
 };

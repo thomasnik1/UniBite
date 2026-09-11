@@ -36,6 +36,7 @@ function Layout() {
                                 <>
                                     <Nav.Link as={Link} to="/ads">Αγγελίες</Nav.Link>
                                     <Nav.Link as={Link} to="/ads/create">Νέα Αγγελία</Nav.Link>
+                                    <Nav.Link as={Link} to="/ads/my-ads">Οι Αγγελίες Μου</Nav.Link>
                                     <Button 
                                         variant="outline-light" 
                                         size="sm" 
