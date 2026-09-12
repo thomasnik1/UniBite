@@ -98,6 +98,40 @@ const showPastRequests = async (req, res) => {
     }
 
 };
+
+const getPendingRequestCount = async (req, res) => {
+    try {
+        const userId = req.user.userId;
+        const count = await requestService.getPendingRequestCount(userId);
+        res.status(200).json({ count });
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ message: 'Failed to load pending request count', error: error.message })
+    }
+};
+
+const showIncomingRequests = async (req, res) => {
+    try {
+        const userId = req.user.userId;
+        const result = await requestService.showIncomingRequests(userId);
+        res.status(200).json({ message: 'Incoming requests', result });
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ message: 'Failed to load incoming requests', error: error.message })
+    }
+};
+
+const showOutgoingRequests = async (req, res) => {
+    try {
+        const userId = req.user.userId;
+        const result = await requestService.showOutgoingRequests(userId);
+        res.status(200).json({ message: 'Outgoing requests', result });
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ message: 'Failed to load outgoing requests', error: error.message })
+    }
+};
+
 module.exports = {
     createRequest,
     acceptRequest,
@@ -105,5 +139,8 @@ module.exports = {
     confirmPickup,
     reportNoShow,
     showPendingRequests,
-    showPastRequests
+    showPastRequests,
+    getPendingRequestCount,
+    showIncomingRequests,
+    showOutgoingRequests
 };          

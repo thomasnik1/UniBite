@@ -34,7 +34,7 @@ api.interceptors.response.use(
     },
     (error) => {
         // Αν το backend στείλει 401 Unauthorized (Ληγμένο/Άκυρο Token)
-        if (error.response && error.response.status === 401) {
+        if (error.response && error.response.status === 403) {
             // Σβήνουμε το χαλασμένο token από τον browser
             localStorage.removeItem('token');
             

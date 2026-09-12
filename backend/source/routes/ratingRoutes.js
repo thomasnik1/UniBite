@@ -8,21 +8,21 @@ const { createRatingSchema, editRatingSchema, deleteRatingSchema } = require('..
 router.post(
     '/create',
     authenticateToken,
-    validateSchema(createRatingSchema),
+    validateSchema(createRatingSchema, 'body'),
     ratingController.createRating
 );
 
 router.patch(
     '/edit/:id',
     authenticateToken,
-    validateSchema(editRatingSchema),
+    validateSchema(editRatingSchema , 'params'),
     ratingController.editRating
 );
 
 router.delete(
     '/delete/:id',
     authenticateToken,
-    validateSchema(deleteRatingSchema),
+    validateSchema(deleteRatingSchema, 'params'),
     ratingController.deleteRating
 );
 

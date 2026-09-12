@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { Container, Row, Col, Card, Button, Spinner, Alert } from 'react-bootstrap';
+import { Container, Row, Col, Card, Button, Spinner, Alert, Form } from 'react-bootstrap';
 import api from '../services/api'; 
 
 import { MapContainer, TileLayer, Marker, Popup } from 'react-leaflet';
@@ -8,6 +8,7 @@ function Ads() {
     const [ads, setAds] = useState([]); 
     const [loading, setLoading] = useState(true); 
     const [error, setError] = useState(''); 
+    const [selectedPortions, setSelectedPortions] = useState({});
 
     useEffect(() => {
         const fetchAds = async () => {
@@ -24,6 +25,42 @@ function Ads() {
 
         fetchAds();
     }, []); 
+
+    // Η νέα λειτουργία για τη δέσμευση
+const handleReserve = async (adId, availablePortions) => {
+        // Αν ο χρήστης δεν έχει επιλέξει κάτι, θεωρούμε ότι θέλει 1 μερίδα
+        const requestedAmount = selectedPortions[adId] || 1;
+        
+        if (requestedAmount > availablePortions) {
+            alert("Δεν υπάρχουν τόσες διαθέσιμες μερίδες!");
+            return;
+        }
+
+        const isConfirmed = window.confirm(`Θέλετε να δεσμεύσετε ${requestedAmount} μερίδα/ες;`);
+        
+        if (isConfirmed) {
+            try {
+                // Στέλνουμε στο POST endpoint τα δεδομένα (ανάλογα πώς τα περιμένει το Backend σου)
+                await api.post('/requests/create', {
+                    adId: adId,
+                    portions: requestedAmount
+                });
+                
+                // Ενημερώνουμε την οθόνη: Αφαιρούμε τις μερίδες και κρύβουμε την αγγελία αν πήγαν στο 0
+                setAds(ads.map(ad => {
+                    if ((ad._id || ad.id) === adId) {
+                        return { ...ad, portions: ad.portions - requestedAmount };
+                    }
+                    return ad;
+                }).filter(ad => ad.portions > 0));
+                
+                alert("Το αίτημά σας καταχωρήθηκε με επιτυχία!");
+            } catch (err) {
+                console.error("Σφάλμα δέσμευσης:", err);
+                alert("Αποτυχία καταχώρησης αιτήματος.");
+            }
+        }
+    };
 
     const athensCenter = [37.9753, 23.7361];
 
@@ -76,9 +113,28 @@ function Ads() {
                                         <strong>Μερίδες:</strong> {ad.portions} <br />
                                         <strong>Περιοχή:</strong> {ad.pickupLocation}
                                     </Card.Text>
-                                    <Button variant="primary" className="w-100 mt-auto">
-                                        Δέσμευση
-                                    </Button>
+                                    <div className="mt-auto">
+                                        <div className="d-flex gap-2 mb-2 align-items-center">
+                                            <small className="fw-bold text-nowrap">Ποσότητα:</small>
+                                            <Form.Control 
+                                                type="number" 
+                                                min="1" 
+                                                max={ad.portions}
+                                                value={selectedPortions[ad._id || ad.id] || 1}
+                                                onChange={(e) => setSelectedPortions({
+                                                    ...selectedPortions,
+                                                    [ad._id || ad.id]: Number(e.target.value)
+                                                })}
+                                            />
+                                        </div>
+                                        <Button 
+                                            variant="primary" 
+                                            className="w-100 fw-bold"
+                                            onClick={() => handleReserve(ad._id || ad.id, ad.portions)}
+                                        >
+                                            Δέσμευση
+                                        </Button>
+                                    </div>
                                 </Card.Body>
                             </Card>
                         </Col>

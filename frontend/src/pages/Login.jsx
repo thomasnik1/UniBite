@@ -26,7 +26,9 @@ function Login() {
                 password: password
             });
             const token = response.data.token || response.data.result?.token; 
-
+            // Βάλε αυτή τη γραμμή ακριβώς κάτω από τη μεταβλητή token
+            const fetchedUsername = response.data.result?.user?.username;
+            localStorage.setItem('username', fetchedUsername);
             // 4. Αν πετύχει, παίρνουμε το Token από το response
             // (Προσάρμοσε το response.data.token ανάλογα με το πώς το στέλνει το δικό σου Backend)
 

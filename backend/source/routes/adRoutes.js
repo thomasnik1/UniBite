@@ -10,7 +10,7 @@ router.get('/feed', adController.getAllActiveAds);
 router.post(
     '/create', 
     authenticateToken,
-    validateSchema(createAdSchema),
+    validateSchema(createAdSchema, 'body'),
     adController.createAd
 );
 

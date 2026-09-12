@@ -6,21 +6,21 @@ const { validateSchema } = require('../middlewares/validatorMiddleware');
 const requestSchema = require('../validators/requestSchema');
 
 router.post('/create' ,
-    validateSchema(requestSchema.createRequestSchema),
+    validateSchema(requestSchema.createRequestSchema, 'body'),
     authenticateToken,
     requestController.createRequest
 );
 
 router.put(
     '/accept/:id',
-    validateSchema(requestSchema.acceptRequestSchema),
+    validateSchema(requestSchema.acceptRequestSchema, 'params'),
     authenticateToken, 
     requestController.acceptRequest
 );
 
 router.put(
     '/reject/:id',
-    validateSchema(requestSchema.rejectRequestSchema),
+    validateSchema(requestSchema.rejectRequestSchema, 'params'),
     authenticateToken,
     requestController.rejectRequest
 );
@@ -41,5 +41,9 @@ router.put(
 
 router.get('/show', authenticateToken, requestController.showPendingRequests);
 router.get('/showPast', authenticateToken, requestController.showPastRequests);
+router.get('/pending-count', authenticateToken, requestController.getPendingRequestCount);
+
+router.get ('/incoming', authenticateToken, requestController.showIncomingRequests);
+router.get ('/outgoing', authenticateToken, requestController.showOutgoingRequests);
 
 module.exports = router;

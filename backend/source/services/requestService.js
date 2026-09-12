@@ -188,6 +188,69 @@ const showPastRequests = async (userId) => {
     return requests;
 };
 
+const getPendingRequestCount = async (userId) => {
+    const user = await User.findByPk(userId);
+
+    if(!user) {
+        throw new Error('User does not exist');
+    }
+
+    const count = await Request.count({
+        where: {
+            status: 'pending'
+        },
+        include: [{
+            model: Ad,
+            as: 'ad',
+            where: {
+                cook_id: user.id 
+            }
+        }]
+    });
+
+    return count;
+};
+
+const showIncomingRequests = async (userId) => {
+    const user = await User.findByPk(userId);
+
+    if(!user) {
+        throw new Error('User does not exist');
+    }
+
+    const requests = await Request.findAll({
+        where: {
+            '$ad.cook_id$': user.id
+        },
+        include: [{
+            model: Ad,
+            as: 'ad'
+        }]
+    });
+
+    return requests;
+};
+
+const showOutgoingRequests = async (userId) => {
+    const user = await User.findByPk(userId);
+
+    if(!user) {
+        throw new Error('User does not exist');
+    }
+
+    const requests = await Request.findAll({
+        where: {
+            consumerId: user.id
+        },
+        include: [{
+            model: Ad,
+            as: 'ad'
+        }]
+    });
+
+    return requests;
+};
+
 module.exports = {
     createRequest,
     acceptRequest,
@@ -195,5 +258,8 @@ module.exports = {
     confirmPickup,
     reportNoShow,
     showPendingRequests,
-    showPastRequests
+    showPastRequests,
+    getPendingRequestCount,
+    showIncomingRequests,
+    showOutgoingRequests
 };

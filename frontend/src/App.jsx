@@ -7,6 +7,7 @@ import Register from './pages/Register';
 import CreateAd from './pages/CreateAd';
 import MyAds from './pages/MyAds';
 import EditAd from './pages/EditAd';
+import Requests from './pages/Requests';
 
 function App() {
   return (
@@ -20,6 +21,8 @@ function App() {
             <Route path="/ads/create" element={<CreateAd />} />
             <Route path="/ads/my-ads" element={<MyAds />} />
             <Route path="/ads/edit/:id" element={<EditAd />} />
+            <Route path="/requests/show" element={<Requests />} />
+
 
             <Route path="*" element={<Navigate to="/ads/feed" replace />} />
           </Route>
