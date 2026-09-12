@@ -16,8 +16,7 @@ router.post(
 
 router.patch(
     '/edit/:id',
-    validateSchema(editAdSchema, 'params'),
-    validateSchema(editAdSchema),
+    validateSchema(editAdSchema, 'body'),
     authenticateToken,
     adController.editAd
 );
@@ -34,5 +33,11 @@ router.get(
     authenticateToken,
     adController.getMyAds
 );
+
+router.get(
+    '/my-ads/:id',
+    authenticateToken,
+    adController.getMyAdById
+)
 
 module.exports = router;

@@ -27,4 +27,24 @@ api.interceptors.request.use(
     }
 );
 
+api.interceptors.response.use(
+    (response) => {
+        // Αν η απάντηση είναι επιτυχής, απλά την προωθούμε
+        return response;
+    },
+    (error) => {
+        // Αν το backend στείλει 401 Unauthorized (Ληγμένο/Άκυρο Token)
+        if (error.response && error.response.status === 401) {
+            // Σβήνουμε το χαλασμένο token από τον browser
+            localStorage.removeItem('token');
+            
+            // Τον πετάμε έξω στην αρχική σελίδα (ή στο /login)
+            // Χρησιμοποιούμε window.location γιατί είμαστε εκτός React Router components
+            window.location.href = '/'; 
+        }
+        
+        return Promise.reject(error);
+    }
+);
+
 export default api;

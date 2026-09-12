@@ -67,21 +67,29 @@ function MyAds() {
                                     </Card.Text>
                                     
                                     {/* 2. Τα Κουμπιά Επεξεργασίας και Διαγραφής */}
-                                    <div className="mt-auto d-flex gap-2">
-                                        <Button 
-                                            variant="warning" 
-                                            className="w-50 text-white"
-                                            onClick={() => navigate(`/edit-ad/${ad._id || ad.id}`)}
-                                        >
-                                            Επεξεργασία
-                                        </Button>
-                                        <Button 
-                                            variant="danger" 
-                                            className="w-50"
-                                            onClick={() => handleDelete(ad._id || ad.id)}
-                                        >
-                                            Διαγραφή
-                                        </Button>
+                                    <div className="mt-auto">
+                                        {ad.status === 'deleted' ? (
+                                            <div className="text-center p-2 bg-light rounded text-danger border border-danger">
+                                                <small className="fw-bold">⚠️ Η αγγελία έχει διαγραφεί</small>
+                                            </div>
+                                        ) : (
+                                            <div className="d-flex gap-2">
+                                                <Button 
+                                                    variant="warning" 
+                                                    className="w-50 text-white"
+                                                    onClick={() => navigate(`/ads/edit/${ad._id || ad.id}`)}
+                                                >
+                                                    Επεξεργασία
+                                                </Button>
+                                                <Button 
+                                                    variant="danger" 
+                                                    className="w-50"
+                                                    onClick={() => handleDelete(ad._id || ad.id)}
+                                                >
+                                                    Διαγραφή
+                                                </Button>
+                                            </div>
+                                        )}
                                     </div>
                                 </Card.Body>
                             </Card>

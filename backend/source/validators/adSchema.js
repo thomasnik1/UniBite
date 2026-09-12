@@ -19,8 +19,8 @@ const editAdSchema = Joi.object({
     description: Joi.string().max(500).allow(''),
     allergens: Joi.string().max(200).allow(''),
     portions: Joi.number().integer().positive(),
-    latitude: Joi.number().precision(8).required(),
-    longitude: Joi.number().precision(8).required(),
+    latitude: Joi.number().precision(8),
+    longitude: Joi.number().precision(8),
     pickupLocationDetails: Joi.string().max(500).allow('').optional(),
     pickupTime: Joi.date().greater('now')
 }).min(1)

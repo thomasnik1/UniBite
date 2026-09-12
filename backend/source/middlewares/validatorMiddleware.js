@@ -1,4 +1,4 @@
-const validateSchema = (schema, property = 'body') => {
+const validateSchema = (schema, property) => {
     return (req, res, next) => {
         const { error, value } = schema.validate(req[property], { abortEarly: false });
         

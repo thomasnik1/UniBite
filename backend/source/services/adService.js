@@ -59,18 +59,27 @@ const deleteAd = async ({ adId, cookId }) => {
 };
 
 const getMyAds = async (cookId) => {
-    
+
     const myAds = await Ad.findAll({
         where: {cookId: cookId}
     });
 
     return myAds;
-}
+};
+
+const getMyAdById = async (cookId, adId) => {
+    const myAd = await Ad.findOne({
+        where: {id: adId}
+    });
+
+    return myAd;
+};
 
 module.exports = {
     getAllActiveAds,
     createAd,
     editAd,
     deleteAd,
-    getMyAds
+    getMyAds,
+    getMyAdById
 };
