@@ -225,6 +225,11 @@ const showIncomingRequests = async (userId) => {
         include: [{
             model: Ad,
             as: 'ad'
+        },
+        {
+            model: User,
+            as: 'requester',
+            attributes: ['username']
         }]
     });
 
@@ -240,7 +245,7 @@ const showOutgoingRequests = async (userId) => {
 
     const requests = await Request.findAll({
         where: {
-            consumerId: user.id
+            consumer_id: user.id,
         },
         include: [{
             model: Ad,

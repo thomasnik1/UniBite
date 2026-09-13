@@ -22,7 +22,6 @@ app.use('/api/users', userRoutes);
 app.use('/api/ratings', ratingRoutes);
 app.use('/api/requests', requestRoutes);
 
-// Έλεγχος σύνδεσης με DB και εκκίνηση Server
 sequelize.authenticate()
     .then(() => {
         console.log('Επιτυχής σύνδεση στη βάση μέσω Sequelize!');

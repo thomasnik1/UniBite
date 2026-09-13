@@ -11,9 +11,7 @@ function Requests() {
     useEffect(() => {
         const fetchRequests = async () => {
             try {
-                // Φέρνουμε τα εισερχόμενα (αυτά που πρέπει να απαντήσουμε)
                 const incomingRes = await api.get('/requests/incoming');
-                // Φέρνουμε τα εξερχόμενα (αυτά που ζητήσαμε εμείς)
                 const outgoingRes = await api.get('/requests/outgoing');
                 
                 setIncomingRequests(incomingRes.data.result || []);
@@ -29,12 +27,10 @@ function Requests() {
         fetchRequests();
     }, []);
 
-    // Συνάρτηση για Αποδοχή Αιτήματος
     const handleAccept = async (requestId) => {
         try {
             await api.put(`/requests/accept/${requestId}`);
             
-            // Ενημερώνουμε την οθόνη (αλλάζουμε το status τοπικά)
             setIncomingRequests(incomingRequests.map(req => 
                 (req._id || req.id) === requestId ? { ...req, status: 'accepted' } : req
             ));
@@ -43,14 +39,12 @@ function Requests() {
         }
     };
 
-    // Συνάρτηση για Απόρριψη Αιτήματος
     const handleReject = async (requestId) => {
         const isConfirmed = window.confirm("Είστε σίγουροι ότι θέλετε να απορρίψετε αυτό το αίτημα;");
         if (isConfirmed) {
             try {
                 await api.put(`/requests/reject/${requestId}`);
                 
-                // Ενημερώνουμε την οθόνη
                 setIncomingRequests(incomingRequests.map(req => 
                     (req._id || req.id) === requestId ? { ...req, status: 'rejected' } : req
                 ));
@@ -60,11 +54,10 @@ function Requests() {
         }
     };
 
-    // Βοηθητική συνάρτηση για τα χρωματιστά Badges
     const getStatusBadge = (status) => {
         switch (status) {
             case 'pending': return <Badge bg="warning" text="dark">Σε Αναμονή</Badge>;
-            case 'accepted': return <Badge bg="success">Έγινε Αποδοχή!</Badge>;
+            case 'approved': return <Badge bg="success">Έγινε Αποδοχή!</Badge>;
             case 'rejected': return <Badge bg="danger">Απορρίφθηκε</Badge>;
             default: return <Badge bg="secondary">{status}</Badge>;
         }
@@ -80,7 +73,6 @@ function Requests() {
             {!loading && !error && (
                 <Tabs defaultActiveKey="incoming" className="mb-4">
                     
-                    {/* ΤΑΒ 1: ΕΙΣΕΡΧΟΜΕΝΑ (Πρέπει να απαντήσω) */}
                     <Tab eventKey="incoming" title="Εισερχόμενα (Προς εμένα)">
                         {incomingRequests.length === 0 ? (
                             <Alert variant="info">Δεν έχετε νέα αιτήματα για τις αγγελίες σας.</Alert>
@@ -94,7 +86,7 @@ function Requests() {
                                                 <Card.Title>Αγγελία: {req.ad?.title}</Card.Title>
                                                 <Card.Text>
                                                     {/* Στο JSON δεν βλέπω το όνομα, οπότε προς το παρόν δείχνουμε το ID του χρήστη */}
-                                                    <strong>Από Χρήστη (ID):</strong> {req.consumerId} <br/>
+                                                    <strong>Από Χρήστη:</strong> {req.consumer?.username || req.User?.username || `ID: ${req.consumerId}`} <br/>
                                                     <strong>Ζητούμενες Μερίδες:</strong> {req.portions} <br/>
                                                     <strong>Κατάσταση:</strong> {getStatusBadge(req.status)}
                                                 </Card.Text>
@@ -117,7 +109,6 @@ function Requests() {
                         )}
                     </Tab>
 
-                    {/* ΤΑΒ 2: ΕΞΕΡΧΟΜΕΝΑ (Τι έχω ζητήσει) */}
                     <Tab eventKey="outgoing" title="Τα Αιτήματά Μου">
                         {outgoingRequests.length === 0 ? (
                             <Alert variant="info">Δεν έχετε στείλει ακόμα κανένα αίτημα.</Alert>

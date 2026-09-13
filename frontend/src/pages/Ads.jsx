@@ -26,9 +26,7 @@ function Ads() {
         fetchAds();
     }, []); 
 
-    // Η νέα λειτουργία για τη δέσμευση
 const handleReserve = async (adId, availablePortions) => {
-        // Αν ο χρήστης δεν έχει επιλέξει κάτι, θεωρούμε ότι θέλει 1 μερίδα
         const requestedAmount = selectedPortions[adId] || 1;
         
         if (requestedAmount > availablePortions) {
@@ -40,13 +38,11 @@ const handleReserve = async (adId, availablePortions) => {
         
         if (isConfirmed) {
             try {
-                // Στέλνουμε στο POST endpoint τα δεδομένα (ανάλογα πώς τα περιμένει το Backend σου)
                 await api.post('/requests/create', {
                     adId: adId,
                     portions: requestedAmount
                 });
                 
-                // Ενημερώνουμε την οθόνη: Αφαιρούμε τις μερίδες και κρύβουμε την αγγελία αν πήγαν στο 0
                 setAds(ads.map(ad => {
                     if ((ad._id || ad.id) === adId) {
                         return { ...ad, portions: ad.portions - requestedAmount };
@@ -68,7 +64,6 @@ const handleReserve = async (adId, availablePortions) => {
         <Container className="mt-4">
             <h2 className="mb-4">Διαθέσιμες Αγγελίες 🍲</h2>
 
-            {/* Ο ΧΑΡΤΗΣ ΜΑΣ */}
             <div className="mb-5 shadow-sm" style={{ borderRadius: '8px', overflow: 'hidden' }}>
                 <MapContainer center={athensCenter} zoom={13} style={{ height: '400px', width: '100%' }}>
                     <TileLayer
@@ -76,11 +71,7 @@ const handleReserve = async (adId, availablePortions) => {
                         url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
                     />
                     
-                    {/* ΔΥΝΑΜΙΚΗ ΕΜΦΑΝΙΣΗ ΠΙΝΕΖΩΝ */}
-                    {/* Περιμένουμε να φορτώσουν οι αγγελίες και μετά τις κάνουμε loop */}
                     {!loading && ads.map((ad) => {
-                        // Βάζουμε μια δικλείδα ασφαλείας: Ζωγράφισε πινέζα ΜΟΝΟ αν η αγγελία έχει συντεταγμένες
-                        // (Αυτό προστατεύει τον χάρτη από το να "κράσαρει" αν έχεις παλιές αγγελίες στη βάση χωρίς lat/lng)
                         if (ad.latitude && ad.longitude) {
                             return (
                                 <Marker key={ad._id || ad.id} position={[ad.latitude, ad.longitude]}>
@@ -92,16 +83,14 @@ const handleReserve = async (adId, availablePortions) => {
                                 </Marker>
                             );
                         }
-                        return null; // Αν δεν έχει συντεταγμένες, μην ζωγραφίσεις τίποτα
+                        return null;
                     })}
                 </MapContainer>
             </div>
 
-            {/* Εμφάνιση μηνυμάτων φόρτωσης/λάθους */}
             {loading && <Spinner animation="border" />}
             {error && <Alert variant="danger">{error}</Alert>}
 
-            {/* Εμφάνιση των Καρτών */}
             {!loading && !error && (
                 <Row>
                     {ads.map((ad) => (

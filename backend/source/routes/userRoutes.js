@@ -9,5 +9,6 @@ router.post('/create', validateSchema(createUserSchema, 'body'), userController.
 router.post('/login', validateSchema(loginUserSchema, 'body'), userController.loginUser);
 router.post('/logout', authenticateToken, userController.logoutUser);
 router.post('/refresh', userController.refreshToken);
+router.get('/me', authenticateToken, userController.getCurrentUser);
 
 module.exports = router;

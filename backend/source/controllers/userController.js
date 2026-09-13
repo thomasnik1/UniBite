@@ -46,11 +46,23 @@ const refreshToken = async (req, res) => {
         console.error(error);
         res.status(403).json({ error: 'Invalid refresh token' });
     }
-}
+};
+
+const getCurrentUser = async (req, res) => {
+    try {
+        const userId = req.user.userId; // Assuming the user ID is available in the request object after authentication
+        const result = await userService.getCurrentUser(userId);
+        res.status(200).json({ user: result });
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ error: 'Αποτυχία λήψης στοιχείων χρήστη' });
+    }
+};
 
 module.exports = {
     createUser,
     loginUser,
     logoutUser,
-    refreshToken
+    refreshToken,
+    getCurrentUser
 };

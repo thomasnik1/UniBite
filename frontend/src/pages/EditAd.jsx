@@ -5,32 +5,24 @@ import api from '../services/api';
 import { MapContainer, TileLayer, Marker, useMapEvents } from 'react-leaflet';
 
 function EditAd() {
-    const { id } = useParams(); // Παίρνουμε το ID της αγγελίας από το URL
+    const { id } = useParams();
     const navigate = useNavigate();
 
-    // States για τη φόρμα
     const [title, setTitle] = useState('');
     const [portions, setPortions] = useState(1);
     const [pickupLocationDetails, setPickupLocationDetails] = useState('');
     const [pickupTime, setPickupTime] = useState(new Date());
-    
-    // Ξεκινάμε με null, μέχρι να φέρουμε τις συντεταγμένες από τη βάση
     const [position, setPosition] = useState(null); 
-    
-    // States για τη φόρτωση
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState('');
 
-    // 1. Φέρνουμε τα δεδομένα της αγγελίας μόλις φορτώσει η σελίδα
     useEffect(() => {
         const fetchAd = async () => {
             try {
-                // ΠΡΟΣΟΧΗ: Βάλε το σωστό endpoint που φέρνει ΜΙΑ αγγελία
                 const response = await api.get(`ads/my-ads/${id}`); 
                 const ad = response.data;
                 console.log("Δεδομένα που ήρθαν από το Backend:", ad);
 
-                // Γεμίζουμε τα states με τα παλιά δεδομένα
                 setTitle(ad.title);
                 setPortions(ad.portions);
                 setPickupLocationDetails(ad.pickupLocationDetails);
@@ -48,7 +40,6 @@ function EditAd() {
         fetchAd();
     }, [id]);
 
-    // 2. Η συνάρτηση για το κλικ στον χάρτη
     function LocationMarker() {
         useMapEvents({
             click(e) {
@@ -60,24 +51,20 @@ function EditAd() {
         );
     }
 
-    // 3. Η αποστολή (Save) των νέων δεδομένων
     const handleSubmit = async (e) => {
         e.preventDefault();
         setError('');
 
         try {
-            // ΠΡΟΣΟΧΗ: Βάλε το σωστό endpoint για το Update (π.χ. PUT /ads/edit/:id)
             await api.patch(`/ads/edit/${id}`, {
                 title,
                 portions: Number(portions),
-                // 4. Προσθέτουμε τις συντεταγμένες για το Backend
                 latitude: position.lat,
                 longitude: position.lng,
                 pickupLocationDetails: pickupLocationDetails,
                 pickupTime: pickupTime.toISOString()
             });
 
-            // Επιστροφή στις Αγγελίες Μου
             navigate('/my-ads');
         } catch (err) {
             if (err.response && err.response.data && err.response.data.errors) {
@@ -88,8 +75,6 @@ function EditAd() {
         }
     };
 
-    // Αν φορτώνει ακόμα τα δεδομένα, δείχνουμε το Spinner
-    // (Είναι σημαντικό για να μην φορτώσει ο χάρτης με λάθος κέντρο)
     if (loading) {
         return (
             <Container className="mt-5 text-center">
@@ -133,7 +118,6 @@ function EditAd() {
                             <Col md={6}>
                                 <Form.Group className="mb-3">
                                     <Form.Label>Χρόνος Παραλαβής</Form.Label>
-                                    {/* Προσοχή στη μετατροπή της ώρας για να μπει σωστά στο input */}
                                     <Form.Control 
                                         type="datetime-local" 
                                         value={pickupTime.toISOString().slice(0,16)}
@@ -161,7 +145,6 @@ function EditAd() {
                             </Form.Label>
                             
                             <div style={{ borderRadius: '8px', overflow: 'hidden', border: '1px solid #ced4da' }}>
-                                {/* Το center παίρνει τις συντεταγμένες που μόλις κατεβάσαμε! */}
                                 <MapContainer 
                                     center={[position.lat, position.lng]} 
                                     zoom={14} 

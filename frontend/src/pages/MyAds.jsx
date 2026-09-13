@@ -8,7 +8,7 @@ function MyAds() {
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState('');
     
-    const navigate = useNavigate(); // Εργαλείο για αλλαγή σελίδας
+    const navigate = useNavigate();
 
     useEffect(() => {
         const fetchMyAds = async () => {
@@ -24,17 +24,13 @@ function MyAds() {
         fetchMyAds();
     }, []);
 
-    // 1. Η λειτουργία της Διαγραφής
     const handleDelete = async (adId) => {
-        // Ζητάμε επιβεβαίωση από τον χρήστη πριν τη διαγραφή
         const isConfirmed = window.confirm("Είστε σίγουροι ότι θέλετε να διαγράψετε αυτή την αγγελία;");
         
         if (isConfirmed) {
             try {
-                // ΠΡΟΣΟΧΗ: Βάλε το σωστό endpoint διαγραφής του backend σου (π.χ. /ads/:id)
                 await api.delete(`/ads/delete/${adId}`);
                 
-                // Αφαιρούμε την αγγελία από την οθόνη ΧΩΡΙΣ να κάνουμε refresh τη σελίδα!
                 setMyAds(myAds.filter((ad) => (ad._id || ad.id) !== adId));
             } catch (err) {
                 console.error("Σφάλμα διαγραφής:", err);
@@ -66,7 +62,6 @@ function MyAds() {
                                         <strong>Περιοχή:</strong> {ad.pickupLocation} <br />
                                     </Card.Text>
                                     
-                                    {/* 2. Τα Κουμπιά Επεξεργασίας και Διαγραφής */}
                                     <div className="mt-auto">
                                         {ad.status === 'deleted' ? (
                                             <div className="text-center p-2 bg-light rounded text-danger border border-danger">

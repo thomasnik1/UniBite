@@ -5,44 +5,30 @@ import { AuthContext } from '../context/AuthContext';
 
 
 function Login() {
-    // 1. Τα State (η "μνήμη" του component)
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
-    const [error, setError] = useState(''); // Για να δείχνουμε τα λάθη από το backend
+    const [error, setError] = useState('');
     
     const navigate = useNavigate();
     const { login } = useContext(AuthContext); 
 
-    // 2. Η συνάρτηση που τρέχει όταν πατάμε "Σύνδεση"
     const handleLogin = async (e) => {
-        // ΣΤΑΜΑΤΑΕΙ το default refresh της σελίδας που κάνει η HTML στις φόρμες
         e.preventDefault(); 
-        setError(''); // Καθαρίζουμε παλιά λάθη
+        setError('');
 
         try {
-            // 3. Στέλνουμε το POST Request στο Backend (Δες το URL σου, π.χ. /users/login ή /auth/login)
             const response = await api.post('/users/login', {
                 username: username,
                 password: password
             });
             const token = response.data.token || response.data.result?.token; 
-            // Βάλε αυτή τη γραμμή ακριβώς κάτω από τη μεταβλητή token
             const fetchedUsername = response.data.result?.user?.username;
             localStorage.setItem('username', fetchedUsername);
-            // 4. Αν πετύχει, παίρνουμε το Token από το response
-            // (Προσάρμοσε το response.data.token ανάλογα με το πώς το στέλνει το δικό σου Backend)
 
-            // 5. Το αποθηκεύουμε στο Local Storage του browser για να μην το χάσουμε σε refresh
             login(token);
-
-            console.log('Επιτυχής σύνδεση! Το token αποθηκεύτηκε.');
-
-            // 6. Τον "πετάμε" αυτόματα στη σελίδα με τις αγγελίες
             navigate('/ads');
 
         } catch (err) {
-            // Αν το Backend μας γυρίσει σφάλμα (π.χ. 401 Λάθος Κωδικός ή 400 από το Joi)
-            // Ψάχνουμε να βρούμε το μήνυμα μέσα στο err.response.data
             console.error(err);
             if (err.response && err.response.data && err.response.data.error) {
                 setError(err.response.data.error);
@@ -56,7 +42,6 @@ function Login() {
         <div style={{ maxWidth: '400px', margin: '0 auto', padding: '20px' }}>
             <h2>Σύνδεση 🔐</h2>
             
-            {/* Αν υπάρχει error, το δείχνουμε με κόκκινα γράμματα */}
             {error && <p style={{ color: 'red', fontWeight: 'bold' }}>{error}</p>}
 
             <form onSubmit={handleLogin} style={{ display: 'flex', flexDirection: 'column', gap: '15px' }}>
@@ -66,8 +51,7 @@ function Login() {
                     <input 
                         type="Username" 
                         value={username}
-                        onChange={(e) => setUsername(e.target.value)} // Ενημερώνει το State σε κάθε πληκτρολόγηση
-                        required 
+                        onChange={(e) => setUsername(e.target.value)}
                         style={{ width: '100%', padding: '8px' }}
                     />
                 </div>

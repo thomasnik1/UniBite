@@ -20,8 +20,8 @@ Ad.hasMany(Request, { foreignKey: 'ad_id', as: 'requests' });
 Request.belongsTo(Ad, { foreignKey: 'ad_id', as: 'ad' });
 
 // Σχέση User - Request (Προαιρετικά: Ένας χρήστης κάνει πολλά αιτήματα)
-// User.hasMany(Request, { foreignKey: 'consumer_id', as: 'requests' });
-// Request.belongsTo(User, { foreignKey: 'consumer_id', as: 'requester' });
+User.hasMany(Request, { foreignKey: 'consumer_id', as: 'requests' });
+Request.belongsTo(User, { foreignKey: 'consumer_id', as: 'requester' });
 
 // 4. Εξαγωγή όλων μαζί σε ένα αντικείμενο
 module.exports = {

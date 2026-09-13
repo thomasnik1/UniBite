@@ -8,6 +8,7 @@ import CreateAd from './pages/CreateAd';
 import MyAds from './pages/MyAds';
 import EditAd from './pages/EditAd';
 import Requests from './pages/Requests';
+import Profile from './pages/Profile'; // Εισάγουμε τη νέα σελίδα Προφίλ
 
 function App() {
   return (
@@ -22,6 +23,7 @@ function App() {
             <Route path="/ads/my-ads" element={<MyAds />} />
             <Route path="/ads/edit/:id" element={<EditAd />} />
             <Route path="/requests/show" element={<Requests />} />
+            <Route path="/profile" element={<Profile />} />
 
 
             <Route path="*" element={<Navigate to="/ads/feed" replace />} />

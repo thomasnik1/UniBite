@@ -128,10 +128,17 @@ const refreshToken = async (refreshToken) => {
     };
 };
 
+const getCurrentUser = async (userId) => {
+    const user = await User.findByPk(userId, {
+        attributes: ['username', 'email', 'role', 'credits']
+    });
+    return user;
+};
 
 module.exports = {
     createUser,
     loginUser,
     logoutUser,
-    refreshToken
+    refreshToken,
+    getCurrentUser
 };

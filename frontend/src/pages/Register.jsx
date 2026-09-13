@@ -15,7 +15,6 @@ function Register() {
 
     const navigate = useNavigate();
     
-    // 3. Ζητάμε τη συνάρτηση login από τον "Εγκέφαλο"
     const { login } = useContext(AuthContext); 
 
     const handleRegister = async (e) => {
@@ -24,7 +23,6 @@ function Register() {
         setSuccess('');
 
         try {
-            // Κάνουμε το POST request
             const response = await api.post('/users/create', {
                 username: username,
                 email: email,
@@ -34,10 +32,8 @@ function Register() {
 
             login(token);
 
-            // Δείχνουμε ένα ωραίο μήνυμα
             setSuccess('Επιτυχής εγγραφή! Μεταφέρεστε στις αγγελίες...');
             
-            // Μετά από 1.5 δευτερόλεπτο (για να προλάβει να δει το μήνυμα), τον πάμε στο /ads
             setTimeout(() => {
                 navigate('/ads');
             }, 150);

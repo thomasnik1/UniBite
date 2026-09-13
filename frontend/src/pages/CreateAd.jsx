@@ -3,7 +3,6 @@ import { useNavigate } from 'react-router-dom';
 import { Container, Card, Form, Button, Alert, Row, Col } from 'react-bootstrap';
 import api from '../services/api'; 
 
-// 1. Εισάγουμε τα εργαλεία του χάρτη!
 import { MapContainer, TileLayer, Marker, useMapEvents } from 'react-leaflet';
 
 function CreateAd() {
@@ -12,22 +11,17 @@ function CreateAd() {
     const [pickupLocationDetails, setPickupLocationDetails] = useState('');
     const [pickupTime, setPickupTime] = useState(new Date());
     const [error, setError] = useState('');
-    
-    // 2. ΝΕΟ STATE: Κρατάει τις συντεταγμένες (ξεκινάει από Σύνταγμα)
     const [position, setPosition] = useState({ lat: 37.9753, lng: 23.7361 });
     
     const navigate = useNavigate();
 
-    // 3. Η μαγική συνάρτηση που "ακούει" τα κλικ πάνω στον χάρτη
     function LocationMarker() {
         useMapEvents({
             click(e) {
-                // Όταν κάνεις κλικ, παίρνει το ακριβές σημείο και αλλάζει το state
                 setPosition(e.latlng);
             },
         });
 
-        // Εμφανίζει την πινέζα στο σημείο που έχουμε αποθηκεύσει
         return position === null ? null : (
             <Marker position={position}></Marker>
         );
@@ -41,7 +35,6 @@ function CreateAd() {
             await api.post('/ads/create', {
                 title,
                 portions: Number(portions),
-                // 4. Προσθέτουμε τις συντεταγμένες για το Backend
                 latitude: position.lat,
                 longitude: position.lng,
                 pickupLocationDetails: pickupLocationDetails,
@@ -50,7 +43,6 @@ function CreateAd() {
 
             navigate('/ads');
         } catch (err) {
-            // Βελτιωμένη διαχείριση σφαλμάτων για να βλέπεις τι "χτυπάει" στο Joi
             if (err.response && err.response.data && err.response.data.error) {
                 setError(`Λάθος από το Backend: ${err.response.data.error}`);
             } else {
@@ -77,7 +69,6 @@ function CreateAd() {
                             />
                         </Form.Group>
 
-                        {/* Έβαλα τις Μερίδες και τον Χρόνο σε μία σειρά (Row) για να εξοικονομήσουμε χώρο */}
                         <Row>
                             <Col md={6}>
                                 <Form.Group className="mb-3">
@@ -132,7 +123,6 @@ function CreateAd() {
                                         attribution='&copy; OpenStreetMap'
                                         url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
                                     />
-                                    {/* Καλούμε το custom Component μας για το κλικ */}
                                     <LocationMarker />
                                 </MapContainer>
                             </div>
