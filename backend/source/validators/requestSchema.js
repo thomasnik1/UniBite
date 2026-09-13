@@ -22,8 +22,14 @@ const rejectRequestSchema =Joi.object({
     stripUnknown: true
 });
 
-const confirmPickupSchema = Joi.object({
+const confirmPickupIdSchema = Joi.object({
     id: Joi.number().integer().positive(),
+}).options({
+    presence: 'required',
+    stripUnknown: true
+});
+
+const confirmPickupAdIdSchema = Joi.object({
     adId: Joi.number().integer().positive()
 }).options({
     presence: 'required',
@@ -42,6 +48,7 @@ module.exports = {
     createRequestSchema,
     acceptRequestSchema,
     rejectRequestSchema,
-    confirmPickupSchema,
+    confirmPickupIdSchema,  
+    confirmPickupAdIdSchema,
     reportNoShowSchema
 };

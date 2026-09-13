@@ -100,7 +100,7 @@ const handleReserve = async (adId, availablePortions) => {
                                     <Card.Title>{ad.title}</Card.Title>
                                     <Card.Text>
                                         <strong>Μερίδες:</strong> {ad.portions} <br />
-                                        <strong>Περιοχή:</strong> {ad.pickupLocation}
+                                        <strong>Οδηγίες:</strong> {ad.pickupLocationDetails}
                                     </Card.Text>
                                     <div className="mt-auto">
                                         <div className="d-flex gap-2 mb-2 align-items-center">

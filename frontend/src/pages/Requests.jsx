@@ -65,7 +65,7 @@ function Requests() {
 
     return (
         <Container className="mt-5 mb-5">
-            <h2 className="mb-4">Διαχείριση Αιτημάτων 📩</h2>
+            <h2 className="mb-4">Διαχείριση Αιτημάτων</h2>
 
             {loading && <div className="text-center"><Spinner animation="border" /></div>}
             {error && <Alert variant="danger">{error}</Alert>}
@@ -82,10 +82,8 @@ function Requests() {
                                     <Col md={6} lg={4} key={req._id || req.id} className="mb-4">
                                         <Card className="shadow-sm border-primary h-100">
                                             <Card.Body className="d-flex flex-column">
-                                                {/* Διαβάζουμε τον τίτλο μέσα από το ad object */}
                                                 <Card.Title>Αγγελία: {req.ad?.title}</Card.Title>
                                                 <Card.Text>
-                                                    {/* Στο JSON δεν βλέπω το όνομα, οπότε προς το παρόν δείχνουμε το ID του χρήστη */}
                                                     <strong>Από Χρήστη:</strong> {req.consumer?.username || req.User?.username || `ID: ${req.consumerId}`} <br/>
                                                     <strong>Ζητούμενες Μερίδες:</strong> {req.portions} <br/>
                                                     <strong>Κατάσταση:</strong> {getStatusBadge(req.status)}
@@ -124,9 +122,8 @@ function Requests() {
                                                     <strong>Κατάσταση:</strong> {getStatusBadge(req.status)}
                                                 </Card.Text>
                                                 
-                                                {req.status === 'accepted' && (
+                                                {req.status === 'approved' && (
                                                     <Alert variant="success" className="mt-auto mb-0">
-                                                        {/* Η διεύθυνση είναι επίσης φωλιασμένη στο ad */}
                                                         <small>Οδηγίες: {req.ad?.pickupLocationDetails}</small>
                                                     </Alert>
                                                 )}

@@ -40,7 +40,7 @@ function Login() {
 
     return (
         <div style={{ maxWidth: '400px', margin: '0 auto', padding: '20px' }}>
-            <h2>Σύνδεση 🔐</h2>
+            <h2>Σύνδεση</h2>
             
             {error && <p style={{ color: 'red', fontWeight: 'bold' }}>{error}</p>}
 

@@ -10,7 +10,6 @@ function Profile() {
     useEffect(() => {
         const fetchUserProfile = async () => {
             try {
-                // Υποθέτοντας ότι έχεις endpoint στο backend για τα στοιχεία του τρέχοντος χρήστη
                 const response = await api.get('/users/me');
                 setUser(response.data.user || []);
                 setLoading(false);

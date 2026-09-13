@@ -53,7 +53,7 @@ function Register() {
                 <Col md={6}>
                     <Card className="shadow-sm">
                         <Card.Body>
-                            <h3 className="text-center mb-4">Εγγραφή 📝</h3>
+                            <h3 className="text-center mb-4">Εγγραφή</h3>
                             
                             {error && <Alert variant="danger">{error}</Alert>}
                             {success && <Alert variant="success">{success}</Alert>}
@@ -63,7 +63,6 @@ function Register() {
                                     <Form.Label>Όνομα Χρήστη</Form.Label>
                                     <Form.Control 
                                         type="text" 
-                                        placeholder="π.χ. super_cook" 
                                         value={username}
                                         onChange={(e) => setUsername(e.target.value)}
                                         required

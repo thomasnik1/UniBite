@@ -55,7 +55,7 @@ function CreateAd() {
         <Container className="mt-5 mb-5" style={{ maxWidth: '600px' }}>
             <Card className="shadow-sm">
                 <Card.Body>
-                    <h3 className="text-center mb-4">Δημιουργία Νέας Αγγελίας 🍳</h3>
+                    <h3 className="text-center mb-4">Δημιουργία Νέας Αγγελίας</h3>
                     {error && <Alert variant="danger">{error}</Alert>}
                     
                     <Form onSubmit={handleSubmit}>
@@ -106,7 +106,6 @@ function CreateAd() {
                             />
                         </Form.Group>
 
-                        {/* 5. Ο ΧΑΡΤΗΣ ΕΠΙΛΟΓΗΣ */}
                         <Form.Group className="mb-4">
                             <Form.Label>
                                 <strong>Ακριβές Σημείο στον Χάρτη</strong> <br/>

@@ -19,6 +19,10 @@ const createRating = async ({ consumerId, requestId, ratingScore}) => {
         throw new Error('Request is not approved');
     };
 
+    if (request.isPickedUp !== true) {
+        throw new Error('Request has not been picked up yet');
+    };
+
     const existingRating = await Rating.findOne({
         where: {
             [Op.and]: [

@@ -25,18 +25,20 @@ router.put(
     requestController.rejectRequest
 );
 
-router.put(
-    '/confirm/:id',
-    validateSchema(requestSchema.confirmPickupSchema),
-    authenticateToken,
-    requestController.confirmPickup
-);
 
 router.put(
     '/report/:id',
-    validateSchema(requestSchema.reportNoShowSchema),
+    validateSchema(requestSchema.reportNoShowSchema, 'body'),
     authenticateToken,
     requestController.reportNoShow
+);
+
+router.put(
+    '/confirm/:id',
+    validateSchema(requestSchema.confirmPickupIdSchema, 'params'),
+    validateSchema(requestSchema.confirmPickupAdIdSchema, 'body '),
+    authenticateToken,
+    requestController.confirmPickup
 );
 
 router.get('/show', authenticateToken, requestController.showPendingRequests);
