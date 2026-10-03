@@ -4,6 +4,8 @@ import api from '../services/api';
 
 import { MapContainer, TileLayer, Marker, Popup } from 'react-leaflet';
 
+const BACKEND_URL = 'http://localhost:3000';
+
 function Ads() {
     const [ads, setAds] = useState([]); 
     const [loading, setLoading] = useState(true); 
@@ -62,7 +64,7 @@ const handleReserve = async (adId, availablePortions) => {
 
     return (
         <Container className="mt-4">
-            <h2 className="mb-4">Διαθέσιμες Αγγελίες 🍲</h2>
+            <h2 className="mb-4">Διαθέσιμες Αγγελίες</h2>
 
             <div className="mb-5 shadow-sm" style={{ borderRadius: '8px', overflow: 'hidden' }}>
                 <MapContainer center={athensCenter} zoom={13} style={{ height: '400px', width: '100%' }}>
@@ -96,6 +98,11 @@ const handleReserve = async (adId, availablePortions) => {
                     {ads.map((ad) => (
                         <Col md={4} key={ad._id || ad.id} className="mb-4">
                             <Card className="shadow-sm h-100">
+                            <Card.Img 
+                                variant="top" 
+                                style={{ height: '200px', objectFit: 'cover' }} 
+                                src={ad.imageUrl ? `${BACKEND_URL}${ad.imageUrl}` : 'https://via.placeholder.com/300x200?text=No+Image'} 
+                            /> 
                                 <Card.Body className="d-flex flex-column">
                                     <Card.Title>{ad.title}</Card.Title>
                                     <Card.Text>

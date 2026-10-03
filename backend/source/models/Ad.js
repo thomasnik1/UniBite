@@ -21,6 +21,11 @@ const Ad = sequelize.define('Ad', {
         type: DataTypes.INTEGER,
         allowNull: false
     },
+    imageUrl: {
+        type: DataTypes.STRING,
+        allowNull: true,
+        field: 'image_url'
+    },
     latitude: {
         type: DataTypes.DECIMAL(10,8),
         allowNull: false  

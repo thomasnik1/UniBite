@@ -16,7 +16,7 @@ CREATE TABLE IF NOT EXISTS ads (
     cook_id INT NOT NULL,
     title VARCHAR(100) NOT NULL,
     description TEXT,
-    photo_url VARCHAR(255) DEFAULT NULL,
+    image_url VARCHAR(255) DEFAULT NULL,
     allergens TEXT,
     portions INT NOT NULL,
     latitude DECIMAL(10,8) NOT NULL,

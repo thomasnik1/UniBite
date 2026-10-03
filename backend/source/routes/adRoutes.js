@@ -4,11 +4,13 @@ const adController = require('../controllers/adController');
 const authenticateToken  = require('../middlewares/authMiddleware');
 const { validateSchema } = require('../middlewares/validatorMiddleware');
 const { createAdSchema, editAdSchema, deleteAdSchema } = require('../validators/adSchema')
+const upload = require('../middlewares/uploadMiddleware');
 
 router.get('/feed', adController.getAllActiveAds);
 
 router.post(
-    '/create', 
+    '/create',
+    upload.single('image'),
     authenticateToken,
     validateSchema(createAdSchema, 'body'),
     adController.createAd
@@ -16,6 +18,7 @@ router.post(
 
 router.patch(
     '/edit/:id',
+    upload.single('image'),
     validateSchema(editAdSchema, 'body'),
     authenticateToken,
     adController.editAd

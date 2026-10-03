@@ -14,7 +14,8 @@ const createAd = async (req, res) => {
     try {
         const adData = {
             cookId: req.user.userId,
-            ...req.body
+            ...req.body,
+            imageUrl: req.file ? `/uploads/${req.file.filename}` : null
         };
 
         const newAd = await adService.createAd(adData);
@@ -30,7 +31,8 @@ const editAd = async (req, res) => {
         const editAdData = {
             adId: req.params.id,
             cookId: req.user.userId,
-            ...req.body
+            ...req.body,
+            imageUrl: req.file ? `/uploads/${req.file.filename}` : null
         };
 
         const editAd = await adService.editAd(editAdData);

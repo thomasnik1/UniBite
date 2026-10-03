@@ -21,6 +21,7 @@ app.use('/api/ads', adRoutes);
 app.use('/api/users', userRoutes);
 app.use('/api/ratings', ratingRoutes);
 app.use('/api/requests', requestRoutes);
+app.use('/uploads', express.static('uploads'));
 
 sequelize.authenticate()
     .then(() => {

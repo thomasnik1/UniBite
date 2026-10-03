@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Container, Card, Form, Button, Alert, Row, Col } from 'react-bootstrap';
-import api from '../services/api'; 
+import api from '../services/api';
 
 import { MapContainer, TileLayer, Marker, useMapEvents } from 'react-leaflet';
 
@@ -12,6 +12,9 @@ function CreateAd() {
     const [pickupTime, setPickupTime] = useState(new Date());
     const [error, setError] = useState('');
     const [position, setPosition] = useState({ lat: 37.9753, lng: 23.7361 });
+    
+    // 1. Νέο state για την αποθήκευση του αρχείου της εικόνας
+    const [image, setImage] = useState(null);
     
     const navigate = useNavigate();
 
@@ -32,13 +35,25 @@ function CreateAd() {
         setError('');
 
         try {
-            await api.post('/ads/create', {
-                title,
-                portions: Number(portions),
-                latitude: position.lat,
-                longitude: position.lng,
-                pickupLocationDetails: pickupLocationDetails,
-                pickupTime: pickupTime.toISOString()
+            // 2. Χρήση FormData αντί για απλό αντικείμενο JSON για να περάσουμε αρχείο
+            const formData = new FormData();
+            formData.append('title', title);
+            formData.append('portions', Number(portions));
+            formData.append('latitude', position.lat);
+            formData.append('longitude', position.lng);
+            formData.append('pickupLocationDetails', pickupLocationDetails);
+            formData.append('pickupTime', pickupTime.toISOString());
+            
+            // Αν ο χρήστης έχει επιλέξει εικόνα, την προσθέτουμε στο formData
+            if (image) {
+                formData.append('image', image);
+            }
+
+            // 3. Στέλνουμε το formData με το κατάλληλο header για αρχεία
+            await api.post('/ads/create', formData, {
+                headers: {
+                    'Content-Type': 'multipart/form-data'
+                }
             });
 
             navigate('/ads');
@@ -103,6 +118,16 @@ function CreateAd() {
                                 value={pickupLocationDetails}
                                 onChange={(e) => setPickupLocationDetails(e.target.value)}
                                 required 
+                            />
+                        </Form.Group>
+
+                        {/* 4. Νέο πεδίο φόρμας για την επιλογή φωτογραφίας */}
+                        <Form.Group className="mb-4">
+                            <Form.Label>Φωτογραφία Φαγητού (Προαιρετικό)</Form.Label>
+                            <Form.Control 
+                                type="file" 
+                                accept="image/*"
+                                onChange={(e) => setImage(e.target.files[0])} 
                             />
                         </Form.Group>
 
