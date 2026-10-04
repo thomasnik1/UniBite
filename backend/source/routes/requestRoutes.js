@@ -25,10 +25,9 @@ router.put(
     requestController.rejectRequest
 );
 
-
 router.put(
     '/report/:id',
-    validateSchema(requestSchema.reportNoShowSchema, 'body'),
+    validateSchema(requestSchema.reportNoShowSchema, 'params'),
     authenticateToken,
     requestController.reportNoShow
 );
@@ -36,7 +35,6 @@ router.put(
 router.put(
     '/confirm/:id',
     validateSchema(requestSchema.confirmPickupIdSchema, 'params'),
-    validateSchema(requestSchema.confirmPickupAdIdSchema, 'body '),
     authenticateToken,
     requestController.confirmPickup
 );

@@ -23,22 +23,14 @@ const rejectRequestSchema =Joi.object({
 });
 
 const confirmPickupIdSchema = Joi.object({
-    id: Joi.number().integer().positive(),
-}).options({
-    presence: 'required',
-    stripUnknown: true
-});
-
-const confirmPickupAdIdSchema = Joi.object({
-    adId: Joi.number().integer().positive()
+    id: Joi.number().integer().positive()
 }).options({
     presence: 'required',
     stripUnknown: true
 });
 
 const reportNoShowSchema = Joi.object({
-    id: Joi.number().integer().positive(),
-    adId: Joi.number().integer().positive()
+    id: Joi.number().integer().positive()
 }).options({
     presence: 'required',
     stripUnknown: true
@@ -49,6 +41,5 @@ module.exports = {
     acceptRequestSchema,
     rejectRequestSchema,
     confirmPickupIdSchema,  
-    confirmPickupAdIdSchema,
     reportNoShowSchema
 };

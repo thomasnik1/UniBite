@@ -111,11 +111,11 @@ const rejectRequest = async ({ requestId, cookId }) => {
     return request;
 };
 
-const confirmPickup = async ({ cookId, requestId, adId }) => {
+const confirmPickup = async ({ cookId, requestId }) => {
 
-    const ad = await Ad.findByPk(adId);
     const cook = await User.findByPk(cookId);
     const request = await Request.findByPk(requestId);
+    const ad = await Ad.findByPk(request.adId);
 
     if(cook.id !== ad.cookId) {
         throw new Error('Unauthorized to confirm pickup');
@@ -130,17 +130,26 @@ const confirmPickup = async ({ cookId, requestId, adId }) => {
     return;
 };
 
-const reportNoShow = async ({ cookId, requestId, adId }) => {
+const reportNoShow = async ({ cookId, requestId }) => {
 
-    const ad = await Ad.findByPk(adId);
     const cook = await User.findByPk(cookId);
     const request = await Request.findByPk(requestId);
+    const ad = await Ad.findByPk(request.adId);
     const consumer = await User.findByPk(request.consumerId);
 
     if (cook.id !== ad.cookId) {
         throw new Error('Unauthorized to report no show');
     };
 
+    if (request.status !== 'approved') {
+        throw new Error('Request is not approved');
+    };
+
+    if (request.isPickedUp) {
+        throw new Error('Request has already been picked up');
+    };
+
+    await request.update({ noShowReported: 1 });
     await consumer.update({ credits: consumer.credits + request.portions -1 });
     return;
 };

@@ -4,7 +4,6 @@ const AppError = require('../utilities/AppError');
 
 const getAllActiveAds = async () => {
     return await Ad.findAll({
-        where: { status: 'active' },
         order: [['created_at', 'DESC']]
     });
 };

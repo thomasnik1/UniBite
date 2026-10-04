@@ -27,26 +27,26 @@ function Requests() {
         fetchRequests();
     }, []);
 
-    const handleAccept = async (requestId) => {
+    const handleAccept = async (reqId) => {
         try {
-            await api.put(`/requests/accept/${requestId}`);
+            await api.put(`/requests/accept/${reqId}`);
             
             setIncomingRequests(incomingRequests.map(req => 
-                (req._id || req.id) === requestId ? { ...req, status: 'accepted' } : req
+                (req._id || req.id) === reqId ? { ...req, status: 'accepted' } : req
             ));
         } catch (err) {
             alert('Αποτυχία αποδοχής του αιτήματος.');
         }
     };
 
-    const handleReject = async (requestId) => {
+    const handleReject = async (reqId) => {
         const isConfirmed = window.confirm("Είστε σίγουροι ότι θέλετε να απορρίψετε αυτό το αίτημα;");
         if (isConfirmed) {
             try {
-                await api.put(`/requests/reject/${requestId}`);
+                await api.put(`/requests/reject/${reqId}`);
                 
                 setIncomingRequests(incomingRequests.map(req => 
-                    (req._id || req.id) === requestId ? { ...req, status: 'rejected' } : req
+                    (req._id || req.id) === reqId ? { ...req, status: 'rejected' } : req
                 ));
             } catch (err) {
                 alert('Αποτυχία απόρριψης του αιτήματος.');
@@ -54,8 +54,50 @@ function Requests() {
         }
     };
 
-    const getStatusBadge = (status) => {
-        switch (status) {
+    const handleConfirmPickup = async (reqId) => {
+        try {
+            await api.put(`/requests/confirm/${reqId}`);
+            
+            setIncomingRequests(incomingRequests.map(req => 
+                // ΔΙΟΡΘΩΘΗΚΕ: Αλλαγή σε 'completed' για να εμφανιστεί το σωστό Badge και να κρυφτεί το κουμπί
+                (req._id || req.id) === reqId ? { ...req, status: 'completed' } : req 
+            ));
+            alert('Η παραλαβή επιβεβαιώθηκε επιτυχώς!');
+        } catch (err) {
+            console.error("Σφάλμα επιβεβαίωσης παραλαβής:", err);
+            alert('Αποτυχία επιβεβαίωσης της παραλαβής.');
+        }
+    };
+
+    const handleReportNoShow = async (requestId) => {
+        const isConfirmed = window.confirm("Είστε σίγουροι ότι ο χρήστης δεν εμφανίστηκε; Θα του επιβληθεί ποινή.");
+        if (isConfirmed) {
+            try {
+                // ΣΗΜΕΙΩΣΗ: Αν το backend Joi Schema απαιτεί και το adId, 
+                // θα πρέπει να το στείλεις ως body: await api.put(`/requests/report/${reqId}`, { adId: ... })
+                await api.put(`/requests/report/${requestId}`);
+                
+                setIncomingRequests(incomingRequests.map(req => 
+                    (req._id || req.id) === requestId ? { ...req } : req
+                ));
+                alert('Η αναφορά καταχωρήθηκε επιτυχώς.');
+            } catch (err) {
+                console.error("Σφάλμα αναφοράς:", err);
+                alert('Αποτυχία καταχώρησης αναφοράς.');
+            }
+        }
+    };
+
+    const getStatusBadge = (req) => {
+        if ((req.status === 'approved' && req.isPickedUp )) {
+            return <Badge bg="info">Ολοκληρώθηκε</Badge>;
+        }
+
+        if (( req.status === 'approved' && req.noShowReported )) {
+            return <Badge bg="danger">Δεν Εμφανίστηκε</Badge>;
+        }
+
+        switch (req.status) {
             case 'pending': return <Badge bg="warning" text="dark">Σε Αναμονή</Badge>;
             case 'approved': return <Badge bg="success">Έγινε Αποδοχή!</Badge>;
             case 'rejected': return <Badge bg="danger">Απορρίφθηκε</Badge>;
@@ -78,31 +120,54 @@ function Requests() {
                             <Alert variant="info">Δεν έχετε νέα αιτήματα για τις αγγελίες σας.</Alert>
                         ) : (
                             <Row>
-                                {incomingRequests.map(req => (
-                                    <Col md={6} lg={4} key={req._id || req.id} className="mb-4">
-                                        <Card className="shadow-sm border-primary h-100">
-                                            <Card.Body className="d-flex flex-column">
-                                                <Card.Title>Αγγελία: {req.ad?.title}</Card.Title>
-                                                <Card.Text>
-                                                    <strong>Από Χρήστη:</strong> {req.consumer?.username || req.User?.username || `ID: ${req.consumerId}`} <br/>
-                                                    <strong>Ζητούμενες Μερίδες:</strong> {req.portions} <br/>
-                                                    <strong>Κατάσταση:</strong> {getStatusBadge(req.status)}
-                                                </Card.Text>
+                                {incomingRequests.map(req => {                                    
+                                    const currentRequestId = req._id || req.id; 
+                                    
+                                    return (
+                                        <Col md={6} lg={4} key={currentRequestId} className="mb-4">
+                                            <Card className="shadow-sm border-primary h-100">
+                                                <Card.Body className="d-flex flex-column">
+                                                    <Card.Title>Αγγελία: {req.ad?.title}</Card.Title>
+                                                    <Card.Text>
+                                                        <strong>Από Χρήστη:</strong> { req.requester?.username } <br/>
+                                                        <strong>Ζητούμενες Μερίδες:</strong> {req.portions} <br/>
+                                                        <strong>Κατάσταση:</strong> {getStatusBadge(req)}
+                                                    </Card.Text>
                                                 
                                                 {req.status === 'pending' && (
                                                     <div className="mt-auto d-flex gap-2">
-                                                        <Button variant="success" className="w-50" onClick={() => handleAccept(req._id || req.id)}>
+                                                        <Button variant="success" className="w-50" onClick={() => handleAccept(currentRequestId)}>
                                                             Αποδοχή
                                                         </Button>
-                                                        <Button variant="danger" className="w-50" onClick={() => handleReject(req._id || req.id)}>
+                                                        <Button variant="danger" className="w-50" onClick={() => handleReject(currentRequestId)}>
                                                             Απόρριψη
+                                                        </Button>
+                                                    </div>
+                                                )}
+
+                                                {(req.status === 'approved' ) && !req.isPickedUp && !req.noShowReported && (
+                                                    <div className="mt-auto d-flex flex-column gap-2">
+                                                        <Button 
+                                                            variant="info" 
+                                                            className="w-100 fw-bold text-white mt-2" 
+                                                            onClick={() => handleConfirmPickup(currentRequestId)}
+                                                        >
+                                                            Επιβεβαίωση Παραλαβής
+                                                        </Button>
+                                                        <Button 
+                                                            variant="outline-danger" 
+                                                            className="w-100 fw-bold" 
+                                                            onClick={() => handleReportNoShow(currentRequestId)}
+                                                        >
+                                                            Αναφορά Μη Εμφάνισης
                                                         </Button>
                                                     </div>
                                                 )}
                                             </Card.Body>
                                         </Card>
                                     </Col>
-                                ))}
+                                    );
+                                })}
                             </Row>
                         )}
                     </Tab>
@@ -122,7 +187,7 @@ function Requests() {
                                                     <strong>Κατάσταση:</strong> {getStatusBadge(req.status)}
                                                 </Card.Text>
                                                 
-                                                {req.status === 'approved' && (
+                                                {(req.status === 'accepted' || req.status === 'approved') && (
                                                     <Alert variant="success" className="mt-auto mb-0">
                                                         <small>Οδηγίες: {req.ad?.pickupLocationDetails}</small>
                                                     </Alert>

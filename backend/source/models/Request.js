@@ -26,6 +26,12 @@ const Request = sequelize.define('Request', {
         defaultValue : 'false',
         allowNull : false 
     },
+    noShowReported : {
+        type : DataTypes.BOOLEAN,
+        field: 'no_show_reported',
+        defaultValue : 'false',
+        allowNull : false 
+    },
     pickupTime: {
         type: DataTypes.DATE,
         field: 'pickup_time',

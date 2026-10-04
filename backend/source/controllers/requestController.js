@@ -47,8 +47,7 @@ const confirmPickup = async (req, res) => {
     try {
         const confirmPickupData = {
             cookId: req.user.userId,
-            requestId: req.params.id,
-            adId: req.body.adId
+            requestId: req.params.id
         };
 
         const result = await requestService.confirmPickup(confirmPickupData);
@@ -63,9 +62,8 @@ const reportNoShow = async (req, res) => {
     try {
         const reportNoShowData = {
             cookId: req.user.userId,
-            requestId: req.params.id,
-            adId: req.body.adId
-        };
+            requestId: req.params.id
+           };
 
         const result = await requestService.reportNoShow(reportNoShowData);
         res.status(200).json({ message: 'User has succesfully been reported', request: result });
@@ -114,6 +112,7 @@ const showIncomingRequests = async (req, res) => {
     try {
         const userId = req.user.userId;
         const result = await requestService.showIncomingRequests(userId);
+        console.log('Incoming requests result:', result);
         res.status(200).json({ message: 'Incoming requests', result });
     } catch (error) {
         console.error(error);
