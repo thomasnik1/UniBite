@@ -70,6 +70,15 @@ function Ads() {
 
     const athensCenter = [37.9753, 23.7361];
 
+    const sortedAds = [...ads].sort((a, b) => {
+        const aIsActive = a.status === 'active' && a.portions > 0;
+        const bIsActive = b.status === 'active' && b.portions > 0;
+        
+        if (aIsActive && !bIsActive) return -1; // Το a πάει πιο πάνω
+        if (!aIsActive && bIsActive) return 1;  // Το b πάει πιο πάνω
+        return 0; // Αν είναι ίδια (και τα δύο active ή και τα δύο inactive), κρατάνε τη σειρά τους
+    });
+
     return (
         <Container className="mt-4">
             <h2 className="mb-4">Διαθέσιμες Αγγελίες</h2>
@@ -105,7 +114,7 @@ function Ads() {
 
             {!loading && !error && (
                 <Row>
-                    {ads.map((ad) => {
+                    {sortedAds.map((ad) => {
                         // Ελέγχουμε αν η αγγελία είναι ενεργή ΚΑΙ έχει μερίδες
                         const isActive = ad.status === 'active' && ad.portions > 0;
 

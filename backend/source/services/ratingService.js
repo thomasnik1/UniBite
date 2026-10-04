@@ -50,6 +50,7 @@ const createRating = async ({ consumerId, requestId, ratingScore}) => {
         await cook.update({ credits: cook.credits + 2});
     };
     
+    await request.update({ isRated: true });
     return newRating;
 }
 
