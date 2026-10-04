@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { Container, Row, Col, Card, Button, Spinner, Alert, Tabs, Tab, Badge } from 'react-bootstrap';
+import { Container, Row, Col, Card, Button, Spinner, Alert, Tabs, Tab, Badge, Modal } from 'react-bootstrap';
 import api from '../services/api';
 
 function Requests() {
@@ -7,6 +7,11 @@ function Requests() {
     const [outgoingRequests, setOutgoingRequests] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState('');
+
+    // States για το Modal Αξιολόγησης που έλειπαν
+    const [showRatingModal, setShowRatingModal] = useState(false);
+    const [ratingData, setRatingData] = useState({ requestId: null, ratingScore: 0 });
+    const [hoveredStar, setHoveredStar] = useState(0); 
 
     useEffect(() => {
         const fetchRequests = async () => {
@@ -59,7 +64,6 @@ function Requests() {
             await api.put(`/requests/confirm/${reqId}`);
             
             setIncomingRequests(incomingRequests.map(req => 
-                // ΔΙΟΡΘΩΘΗΚΕ: Αλλαγή σε 'completed' για να εμφανιστεί το σωστό Badge και να κρυφτεί το κουμπί
                 (req._id || req.id) === reqId ? { ...req, isPickedUp: true } : req 
             ));
             alert('Η παραλαβή επιβεβαιώθηκε επιτυχώς!');
@@ -73,8 +77,6 @@ function Requests() {
         const isConfirmed = window.confirm("Είστε σίγουροι ότι ο χρήστης δεν εμφανίστηκε; Θα του επιβληθεί ποινή.");
         if (isConfirmed) {
             try {
-                // ΣΗΜΕΙΩΣΗ: Αν το backend Joi Schema απαιτεί και το adId, 
-                // θα πρέπει να το στείλεις ως body: await api.put(`/requests/report/${reqId}`, { adId: ... })
                 await api.put(`/requests/report/${requestId}`);
                 
                 setIncomingRequests(incomingRequests.map(req => 
@@ -88,12 +90,48 @@ function Requests() {
         }
     };
 
+    const handleOpenRatingModal = (reqId) => {
+        setRatingData({ requestId: reqId, ratingScore: 0 });
+        setShowRatingModal(true);
+    };
+
+    const handleCloseRatingModal = () => {
+        setShowRatingModal(false);
+        setRatingData({ requestId: null, ratingScore: 0 });
+        setHoveredStar(0);
+    };
+
+    const handleSubmitRating = async () => {
+        if (ratingData.ratingScore === 0) {
+            alert("Παρακαλώ επιλέξτε βαθμολογία από 1 έως 5 αστέρια.");
+            return;
+        }
+
+        try {
+            await api.post('/ratings/create', {
+                requestId: ratingData.requestId,
+                ratingScore: ratingData.ratingScore
+            });
+
+            alert('Η αξιολόγηση καταχωρήθηκε επιτυχώς!');
+            
+            setOutgoingRequests(outgoingRequests.map(req => 
+                (req._id || req.id) === ratingData.requestId ? { ...req, isRated: true } : req
+            ));
+            
+            handleCloseRatingModal();
+        } catch (err) {
+            console.error("Σφάλμα υποβολής αξιολόγησης:", err);
+            alert('Αποτυχία καταχώρησης της αξιολόγησης.');
+        }
+    };
+    
     const getStatusBadge = (req) => {
-        if ((req.status === 'approved' && req.isPickedUp )) {
+        if (req.status === 'approved' && req.isPickedUp) {
             return <Badge bg="info">Ολοκληρώθηκε</Badge>;
         }
 
-        if (( req.status === 'approved' && req.noShowReported )) {
+        if (req.status === 'approved' && req.noShowReported) {
             return <Badge bg="danger">Δεν Εμφανίστηκε</Badge>;
         }
 
@@ -103,11 +141,6 @@ function Requests() {
             case 'rejected': return <Badge bg="danger">Απορρίφθηκε</Badge>;
             default: return <Badge bg="secondary">{req.status}</Badge>;
         }
-    };
-
-    const handleCreateRating = (requestId) => {
-        // Εδώ μπορείς μελλοντικά να ανοίξεις ένα Modal ή να κάνεις redirect στο route της αξιολόγησης
-        alert(`Άνοιγμα φόρμας αξιολόγησης για το αίτημα με ID: ${reqId}`);
     };
 
     return (
@@ -182,8 +215,14 @@ function Requests() {
                             <Alert variant="info">Δεν έχετε στείλει ακόμα κανένα αίτημα.</Alert>
                         ) : (
                             <Row>
-                                {outgoingRequests.map(req => (
-                                    <Col md={6} lg={4} key={req._id || req.id} className="mb-4">
+                                {outgoingRequests.map(req => {
+                                    const currentRequestId = req._id || req.id;
+                                    const isPickedUp = req.isPickedUp;
+                                    const isRated = req.isRated;
+                                    const noShowReported = req.noShowReported;
+
+                                    return (
+                                    <Col md={6} lg={4} key={currentRequestId} className="mb-4">
                                         <Card className="shadow-sm h-100">
                                             <Card.Body className="d-flex flex-column">
                                                 <Card.Title>Αγγελία: {req.ad?.title}</Card.Title>
@@ -192,43 +231,84 @@ function Requests() {
                                                     <strong>Κατάσταση:</strong> {getStatusBadge(req)}
                                                 </Card.Text>
                                                 
-                                                {(req.status === 'accepted' || req.status === 'approved') && (
+                                                {req.status === 'approved' && (
                                                     <Alert variant="success" className="mt-auto mb-0">
                                                         <small>Οδηγίες: {req.ad?.pickupLocationDetails}</small>
                                                     </Alert>
                                                 )}
 
+                                                {/* Διορθωμένη λογική με καθαρά Ternary Operators */}
                                                 {req.status === 'approved' && (
-                                                        <div className="mt-2">
-                                                            {req.isPickedUp && !req.noShowReport ? (
+                                                    <div className="mt-2">
+                                                        {noShowReported ? (
+                                                            <Alert variant="danger" className="mb-0 text-center" style={{ fontSize: '0.85rem' }}>
+                                                                Ο χρήστης δεν εμφανίστηκε και έχει επιβληθεί ποινή.
+                                                            </Alert>
+                                                        ) : isPickedUp ? (
+                                                            !isRated ? (
                                                                 <Button 
                                                                     variant="warning" 
                                                                     className="w-100 fw-bold text-dark"
-                                                                    onClick={() => handleCreateRating(currentRequestId)}
+                                                                    onClick={() => handleOpenRatingModal(currentRequestId)}
                                                                 >
                                                                     Δημιουργία Αξιολόγησης
                                                                 </Button>
                                                             ) : (
-                                                                req.noShowReported ? (
-                                                                    <Alert variant="danger" className="mb-0 text-center" style={{ fontSize: '0.85rem' }}>
-                                                                        Ο χρήστης δεν εμφανίστηκε και έχει επιβληθεί ποινή.
-                                                                    </Alert>
-                                                                ) : (
-                                                                <Alert variant="secondary" className="mb-0 text-center" style={{ fontSize: '0.85rem' }}>
-                                                                    Η δυνατότητα αξιολόγησης θα ξεκλειδωθεί μόλις ο δημιουργός επιβεβαιώσει την παραλαβή.
+                                                                <Alert variant="success" className="mb-0 text-center" style={{ fontSize: '0.85rem' }}>
+                                                                    Έχετε ήδη αξιολογήσει αυτή την παραγγελία.
                                                                 </Alert>
-                                                            ))}
-                                                        </div>
-                                                    )}
+                                                            )
+                                                        ) : (
+                                                            <Alert variant="secondary" className="mb-0 text-center" style={{ fontSize: '0.85rem' }}>
+                                                                Η δυνατότητα αξιολόγησης θα ξεκλειδωθεί μόλις ο δημιουργός επιβεβαιώσει την παραλαβή.
+                                                            </Alert>
+                                                        )}
+                                                    </div>
+                                                )}
                                             </Card.Body>
                                         </Card>
                                     </Col>
-                                ))}
+                                    ); // Προστέθηκε το κλείσιμο του return που έλειπε
+                                })}
                             </Row>
                         )}
                     </Tab>
                 </Tabs>
             )}
+
+            {/* Ενσωμάτωση του Modal που απουσίαζε από το αρχείο σου */}
+            <Modal show={showRatingModal} onHide={handleCloseRatingModal} centered>
+                <Modal.Header closeButton>
+                    <Modal.Title>Αξιολόγηση Παραγγελίας</Modal.Title>
+                </Modal.Header>
+                <Modal.Body className="text-center py-4">
+                    <p className="mb-2">Πώς θα βαθμολογούσατε την εμπειρία σας;</p>
+                    <div style={{ fontSize: '2.5rem', cursor: 'pointer', userSelect: 'none' }}>
+                        {[1, 2, 3, 4, 5].map(star => (
+                            <span
+                                key={star}
+                                onClick={() => setRatingData({ ...ratingData, ratingScore: star })}
+                                onMouseEnter={() => setHoveredStar(star)}
+                                onMouseLeave={() => setHoveredStar(0)}
+                                style={{ 
+                                    color: star <= (hoveredStar || ratingData.ratingScore) ? '#ffc107' : '#e4e5e9',
+                                    transition: 'color 0.2s'
+                                }}
+                            >
+                                ★
+                            </span>
+                        ))}
+                    </div>
+                </Modal.Body>
+                <Modal.Footer>
+                    <Button variant="secondary" onClick={handleCloseRatingModal}>
+                        Ακύρωση
+                    </Button>
+                    <Button variant="primary" onClick={handleSubmitRating}>
+                        Υποβολή Βαθμολογίας
+                    </Button>
+                </Modal.Footer>
+            </Modal>
         </Container>
     );
 }

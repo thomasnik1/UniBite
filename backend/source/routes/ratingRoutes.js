@@ -8,7 +8,6 @@ const { createRatingSchema, editRatingSchema, deleteRatingSchema } = require('..
 router.post(
     '/create',
     authenticateToken,
-    validateSchema(createRatingSchema, 'params'),
     validateSchema(createRatingSchema, 'body'),
     ratingController.createRating
 );

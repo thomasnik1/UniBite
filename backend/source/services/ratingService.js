@@ -43,11 +43,11 @@ const createRating = async ({ consumerId, requestId, ratingScore}) => {
     });
 
     if (ratingScore <= 3 ) {
-        await cook.update({ credit: cook.credit + 1 });
+        await cook.update({ credits: cook.credits + 1 });
     };
 
     if (ratingScore > 3 ) {
-        await cook.update({ credit: cook.credit + 2});
+        await cook.update({ credits: cook.credits + 2});
     };
     
     return newRating;
