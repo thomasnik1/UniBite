@@ -1,8 +1,7 @@
 import { useState, useContext } from 'react';
 import { useNavigate } from 'react-router-dom';
-import api from '../services/api'; // Εισάγουμε το ρυθμισμένο Axios
+import api from '../services/api'; 
 import { AuthContext } from '../context/AuthContext'; 
-
 
 function Login() {
     const [username, setUsername] = useState('');
@@ -21,13 +20,27 @@ function Login() {
                 username: username,
                 password: password
             });
+            
+            // Διαβάζουμε τα δεδομένα με ασφάλεια (είτε είναι στο data, είτε στο data.result)
             const token = response.data.token || response.data.result?.token; 
-            const fetchedUsername = response.data.result?.user?.username;
+            const userData = response.data.user || response.data.result?.user; 
+            
+            const fetchedUsername = userData?.username;
+            const userRole = userData?.role; 
+
+            // Αποθηκεύουμε τα στοιχεία
             sessionStorage.setItem('username', fetchedUsername);
+            // Αποθηκεύουμε όλο το αντικείμενο user για να μπορεί να το διαβάσει το AdminRoute
+            sessionStorage.setItem('user', JSON.stringify(userData));
 
             login(token);
-            navigate('/ads');
-
+            
+            // Ασφαλής έλεγχος του ρόλου
+            if (userRole === 'admin') {
+                navigate('/admin/dashboard');
+            } else {
+                navigate('/ads');
+            }
         } catch (err) {
             console.error(err);
             if (err.response && err.response.data && err.response.data.error) {

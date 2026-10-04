@@ -9,6 +9,8 @@ import MyAds from './pages/MyAds';
 import EditAd from './pages/EditAd';
 import Requests from './pages/Requests';
 import Profile from './pages/Profile'; // Εισάγουμε τη νέα σελίδα Προφίλ
+import AdminDashboard from './pages/AdminDashboard';
+import AdminRoute from './components/AdminRoute'; // Εισάγουμε το AdminRoute
 
 function App() {
   return (
@@ -25,7 +27,9 @@ function App() {
             <Route path="/requests/show" element={<Requests />} />
             <Route path="/profile" element={<Profile />} />
 
-
+            <Route element={<AdminRoute />}>
+              <Route path="/admin/dashboard" element={<AdminDashboard />} />
+            </Route>
             <Route path="*" element={<Navigate to="/ads/feed" replace />} />
           </Route>
         </Routes>

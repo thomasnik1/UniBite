@@ -6,6 +6,7 @@ const sequelize = require('./source/configuration/database');
 const cronJob = require('./source/jobs/cronJobs')
 
 const adRoutes = require('./source/routes/adRoutes');
+const adminRoutes = require('./source/routes/adminRoutes');
 const ratingRoutes = require('./source/routes/ratingRoutes');
 const requestRoutes = require('./source/routes/requestRoutes'); 
 const userRoutes = require('./source/routes/userRoutes');
@@ -22,6 +23,7 @@ app.use('/api/users', userRoutes);
 app.use('/api/ratings', ratingRoutes);
 app.use('/api/requests', requestRoutes);
 app.use('/uploads', express.static('uploads'));
+app.use('/api/admin', adminRoutes);
 
 sequelize.authenticate()
     .then(() => {

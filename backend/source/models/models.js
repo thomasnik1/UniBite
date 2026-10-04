@@ -23,6 +23,9 @@ Request.belongsTo(Ad, { foreignKey: 'ad_id', as: 'ad' });
 User.hasMany(Request, { foreignKey: 'consumer_id', as: 'requests' });
 Request.belongsTo(User, { foreignKey: 'consumer_id', as: 'requester' });
 
+// Σχέση Request - Rating (Ένα request έχει μία αξιολόγηση)
+Request.hasOne(Rating, { foreignKey: 'request_id', as: 'rating' });
+Rating.belongsTo(Request, { foreignKey: 'request_id', as: 'request' });
 // 4. Εξαγωγή όλων μαζί σε ένα αντικείμενο
 module.exports = {
     sequelize,
