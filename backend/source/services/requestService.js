@@ -149,6 +149,7 @@ const reportNoShow = async ({ cookId, requestId }) => {
         throw new Error('Request has already been picked up');
     };
 
+    await ad.update({ portions: ad.portions + request.portions });
     await request.update({ noShowReported: 1 });
     await consumer.update({ credits: consumer.credits + request.portions -1 });
     return;

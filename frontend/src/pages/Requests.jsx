@@ -32,7 +32,7 @@ function Requests() {
             await api.put(`/requests/accept/${reqId}`);
             
             setIncomingRequests(incomingRequests.map(req => 
-                (req._id || req.id) === reqId ? { ...req, status: 'accepted' } : req
+                (req._id || req.id) === reqId ? { ...req, status: 'approved' } : req
             ));
         } catch (err) {
             alert('Αποτυχία αποδοχής του αιτήματος.');
@@ -60,7 +60,7 @@ function Requests() {
             
             setIncomingRequests(incomingRequests.map(req => 
                 // ΔΙΟΡΘΩΘΗΚΕ: Αλλαγή σε 'completed' για να εμφανιστεί το σωστό Badge και να κρυφτεί το κουμπί
-                (req._id || req.id) === reqId ? { ...req, status: 'completed' } : req 
+                (req._id || req.id) === reqId ? { ...req, isPickedUp: true } : req 
             ));
             alert('Η παραλαβή επιβεβαιώθηκε επιτυχώς!');
         } catch (err) {
@@ -78,7 +78,7 @@ function Requests() {
                 await api.put(`/requests/report/${requestId}`);
                 
                 setIncomingRequests(incomingRequests.map(req => 
-                    (req._id || req.id) === requestId ? { ...req } : req
+                    (req._id || req.id) === requestId ? { ...req, noShowReported: true } : req
                 ));
                 alert('Η αναφορά καταχωρήθηκε επιτυχώς.');
             } catch (err) {
@@ -101,8 +101,13 @@ function Requests() {
             case 'pending': return <Badge bg="warning" text="dark">Σε Αναμονή</Badge>;
             case 'approved': return <Badge bg="success">Έγινε Αποδοχή!</Badge>;
             case 'rejected': return <Badge bg="danger">Απορρίφθηκε</Badge>;
-            default: return <Badge bg="secondary">{status}</Badge>;
+            default: return <Badge bg="secondary">{req.status}</Badge>;
         }
+    };
+
+    const handleCreateRating = (requestId) => {
+        // Εδώ μπορείς μελλοντικά να ανοίξεις ένα Modal ή να κάνεις redirect στο route της αξιολόγησης
+        alert(`Άνοιγμα φόρμας αξιολόγησης για το αίτημα με ID: ${reqId}`);
     };
 
     return (
@@ -145,7 +150,7 @@ function Requests() {
                                                     </div>
                                                 )}
 
-                                                {(req.status === 'approved' ) && !req.isPickedUp && !req.noShowReported && (
+                                                {(req.status === 'approved' && !req.isPickedUp && !req.noShowReported ) && (
                                                     <div className="mt-auto d-flex flex-column gap-2">
                                                         <Button 
                                                             variant="info" 
@@ -184,7 +189,7 @@ function Requests() {
                                                 <Card.Title>Αγγελία: {req.ad?.title}</Card.Title>
                                                 <Card.Text>
                                                     <strong>Ζητήσατε:</strong> {req.portions} μερίδα/ες <br/>
-                                                    <strong>Κατάσταση:</strong> {getStatusBadge(req.status)}
+                                                    <strong>Κατάσταση:</strong> {getStatusBadge(req)}
                                                 </Card.Text>
                                                 
                                                 {(req.status === 'accepted' || req.status === 'approved') && (
@@ -192,6 +197,29 @@ function Requests() {
                                                         <small>Οδηγίες: {req.ad?.pickupLocationDetails}</small>
                                                     </Alert>
                                                 )}
+
+                                                {req.status === 'approved' && (
+                                                        <div className="mt-2">
+                                                            {req.isPickedUp && !req.noShowReport ? (
+                                                                <Button 
+                                                                    variant="warning" 
+                                                                    className="w-100 fw-bold text-dark"
+                                                                    onClick={() => handleCreateRating(currentRequestId)}
+                                                                >
+                                                                    Δημιουργία Αξιολόγησης
+                                                                </Button>
+                                                            ) : (
+                                                                req.noShowReported ? (
+                                                                    <Alert variant="danger" className="mb-0 text-center" style={{ fontSize: '0.85rem' }}>
+                                                                        Ο χρήστης δεν εμφανίστηκε και έχει επιβληθεί ποινή.
+                                                                    </Alert>
+                                                                ) : (
+                                                                <Alert variant="secondary" className="mb-0 text-center" style={{ fontSize: '0.85rem' }}>
+                                                                    Η δυνατότητα αξιολόγησης θα ξεκλειδωθεί μόλις ο δημιουργός επιβεβαιώσει την παραλαβή.
+                                                                </Alert>
+                                                            ))}
+                                                        </div>
+                                                    )}
                                             </Card.Body>
                                         </Card>
                                     </Col>

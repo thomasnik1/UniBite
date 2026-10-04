@@ -28,12 +28,12 @@ function Layout() {
             }
         };
 
-        const token = localStorage.getItem('token');
+        const token = sessionStorage.getItem('token');
         if (token) {
             fetchUnreadRequests();
         }
 
-        const storedUsername = localStorage.getItem('username');
+        const storedUsername = sessionStorage.getItem('username');
             if (storedUsername) {
                 setUsername(storedUsername);
             }

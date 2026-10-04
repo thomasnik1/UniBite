@@ -23,7 +23,7 @@ function Login() {
             });
             const token = response.data.token || response.data.result?.token; 
             const fetchedUsername = response.data.result?.user?.username;
-            localStorage.setItem('username', fetchedUsername);
+            sessionStorage.setItem('username', fetchedUsername);
 
             login(token);
             navigate('/ads');

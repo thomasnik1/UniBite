@@ -9,7 +9,7 @@ const api = axios.create({
 
 api.interceptors.request.use(
     (config) => {
-        const token = localStorage.getItem('token');
+        const token = sessionStorage.getItem('token');
 
         if (token) {
             config.headers.Authorization = `Bearer ${token}`;
@@ -28,7 +28,7 @@ api.interceptors.response.use(
     },
     (error) => {
         if (error.response && error.response.status === 403) {
-            localStorage.removeItem('token');
+            sessionStorage.removeItem('token');
             
             window.location.href = '/'; 
         }

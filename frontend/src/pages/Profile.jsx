@@ -25,7 +25,7 @@ function Profile() {
 
     return (
         <Container className="mt-5" style={{ maxWidth: '600px' }}>
-            <h2 className="mb-4">Το Προφίλ Μου 👤</h2>
+            <h2 className="mb-4">Το Προφίλ Μου</h2>
 
             {loading && <div className="text-center"><Spinner animation="border" /></div>}
             {error && <Alert variant="danger">{error}</Alert>}
