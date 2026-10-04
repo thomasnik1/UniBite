@@ -112,7 +112,6 @@ const showIncomingRequests = async (req, res) => {
     try {
         const userId = req.user.userId;
         const result = await requestService.showIncomingRequests(userId);
-        console.log('Incoming requests result:', result);
         res.status(200).json({ message: 'Incoming requests', result });
     } catch (error) {
         console.error(error);

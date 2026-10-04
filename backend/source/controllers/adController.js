@@ -51,7 +51,7 @@ const deleteAd = async (req, res) => {
         };
         
         const result = await adService.deleteAd(deleteAdData);
-        res.status(200).json({message: 'Η αγγελία διαγράφηκε!', ad: deleteAd});
+        res.status(200).json({message: 'Η αγγελία διαγράφηκε!', result: result});
     } catch (error) {
         console.error(error);
         res.status(500).json({ error: 'Αποτυχία διαγραφής αγγελίας', message: error.message });
@@ -73,7 +73,7 @@ const getMyAds = async (req,res) => {
 
 const getMyAdById = async (req, res) => {
     try {
-        const cookId = req.user.UsreId;
+        const cookId = req.user.userId;
         const adId = req.params.id;
 
         const myAd = await adService.getMyAdById(cookId, adId);

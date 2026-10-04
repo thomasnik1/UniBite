@@ -7,7 +7,7 @@ CREATE TABLE IF NOT EXISTS users (
     email VARCHAR(100) NOT NULL UNIQUE,
     password VARCHAR(255) NOT NULL,
     role ENUM('student', 'admin') DEFAULT 'student',
-    credits INT DEFAULT 5
+    credits INT DEFAULT 0
 );
 
 -- Δημιουργία Πίνακα Αγγελιών

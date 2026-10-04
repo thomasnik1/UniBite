@@ -135,10 +135,63 @@ const getCurrentUser = async (userId) => {
     return user;
 };
 
+const createAdmin = async ({ username, password, email }) => {
+    const existingUser = await User.findOne({
+        where: {
+            [Op.or]: [
+                {email: email},
+                {username: username}
+            ]
+        }
+    });
+
+    if (existingUser) {
+        if (existingUser.email === email) {
+            throw new AppError('Email already exists', 418);
+        }
+        else if (existingUser.username ===  username) {
+            throw new Error('Username already exists');
+        }
+    }
+
+    const hashedPassword = await passwordService.hashPassword(password);
+
+    const newUser = await User.create({
+        username: username,
+        email: email,
+        password: hashedPassword,
+        role: 'admin'
+    });
+
+    const token = jwt.sign(
+        { userId: newUser.id, role: newUser.role },
+        process.env.JWT_SECRET,
+        { expiresIn: '3h' }
+    );
+
+    const refreshToken = jwt.sign(
+        { userId: newUser.id, role: newUser.role },
+        process.env.REFRESH_TOKEN_SECRET,
+        { expiresIn: '7d' }
+    );
+
+    return {
+        user: {
+            id: newUser.id,
+            username: newUser.username,
+            email: newUser.email,
+            role: newUser.role
+        },
+        token: token,
+        refreshToken: refreshToken
+    };
+};
+
 module.exports = {
     createUser,
     loginUser,
     logoutUser,
     refreshToken,
-    getCurrentUser
+    getCurrentUser,
+    createAdmin
 };

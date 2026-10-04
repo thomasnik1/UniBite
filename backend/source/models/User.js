@@ -22,7 +22,7 @@ const User = sequelize.define('User', {
     },
     credits: {
         type: DataTypes.INTEGER,
-        defaultValue: 5
+        defaultValue: 0
     },
 }, {
     tableName: 'users',

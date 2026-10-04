@@ -59,10 +59,21 @@ const getCurrentUser = async (req, res) => {
     }
 };
 
+const createAdmin = async (req, res) => {
+    try {
+        const result = await userService.createAdmin(req.body);
+        res.status(201).json({ message: 'Ο admin δημιουργήθηκε!', result });   
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ error: 'Αποτυχία δημιουργίας admin' });
+    }
+};
+
 module.exports = {
     createUser,
     loginUser,
     logoutUser,
     refreshToken,
-    getCurrentUser
+    getCurrentUser,
+    createAdmin
 };

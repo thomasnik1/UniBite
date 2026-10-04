@@ -3,7 +3,7 @@ const { deleteExpiredAds } = require('./deleteExpiredAdsJob');
 const { nonRatingPenalty } = require('./nonRatingPenalty')
  
 const expiredAdsJob = new CronJob(
-    '0 * * * *',
+    '2 * * * *',
     deleteExpiredAds,
     null,
     true,

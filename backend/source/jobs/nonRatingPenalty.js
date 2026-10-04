@@ -4,27 +4,15 @@ const { Rating, Request, User } = require('../models/models');
 const nonRatingPenalty = async() => {
     try {
         const twoDaysAgo = new Date();
-        twoDaysAgo.setHourst(twoDaysAgo.getHours() - 48);
+        twoDaysAgo.setHours(twoDaysAgo.getHours() - 48);
 
         const nonRatedRequests = await Request.findAll({
-            where: {
                 pickup_time: {
                     [Op.lt]: twoDaysAgo
                 },
-                penalty_applied: false
-            },
-            include: [
-                {
-                    model: Rating,
-                    as: 'rating',
-                    required: false
-                },
-                {
-                    model: User,
-                    as: 'consumer'
-                }
-            ]
-        });
+                penalty_applied: false,
+                is_rated: false
+    })
 
         const requestsToPenalize = nonRatedRequests.filter( req => req.rating === null )
         
