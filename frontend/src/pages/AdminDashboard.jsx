@@ -14,7 +14,6 @@ function AdminDashboard() {
     useEffect(() => {
         const fetchDashboardData = async () => {
             try {
-                // Εκτελούμε και τα 3 requests παράλληλα για ταχύτητα
                 const [portionsRes, donorRes, mealsRes] = await Promise.all([
                     api.get('/admin/stats/portions-last-month'),
                     api.get('/admin/stats/top-donor'),
@@ -30,7 +29,6 @@ function AdminDashboard() {
                 setLoading(false);
             } catch (err) {
                 console.error("Σφάλμα φόρτωσης στατιστικών:", err);
-                // Αν επιστρέψει 403, σημαίνει ότι ο χρήστης δεν είναι admin
                 if (err.response && err.response.status === 403) {
                     setError('Απαγορεύεται η πρόσβαση. Δεν έχετε δικαιώματα διαχειριστή.');
                 } else {
@@ -64,7 +62,6 @@ function AdminDashboard() {
         <Container className="mt-5 mb-5">
             <h2 className="mb-4 fw-bold">Dashboard Διαχειριστή</h2>
 
-            {/* Πρώτη Γραμμή: Κάρτες Στατιστικών */}
             <Row className="mb-5">
                 <Col md={6} className="mb-3">
                     <Card className="shadow-sm border-0 bg-primary text-white h-100">
@@ -103,7 +100,6 @@ function AdminDashboard() {
                 </Col>
             </Row>
 
-            {/* Δεύτερη Γραμμή: Πίνακας με κορυφαία γεύματα */}
             <Card className="shadow-sm border-0">
                 <Card.Header className="bg-white py-3">
                     <h5 className="mb-0 fw-bold">Κορυφαία Γεύματα (Βάσει Αξιολογήσεων)</h5>

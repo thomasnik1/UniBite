@@ -10,7 +10,6 @@ const calculatePortionsLastMonth = async () => {
     const total = await Request.sum('portions', {
         where: {
             isPickedUp: true,
-            // ΔΙΟΡΘΩΣΗ: Χρήση createdAt επειδή το Request.js έχει updatedAt: false
             created_at: { 
                 [Op.gte]: oneMonthAgo
             }
@@ -38,7 +37,6 @@ const findTopDonor = async () => {
                 attributes: ['id', 'username']
             }]
         }],
-        // ΔΙΟΡΘΩΣΗ: Σωστή σύνταξη ομαδοποίησης (grouping) για nested includes στο Sequelize
         group: ['ad->cook.id', 'ad->cook.username'],
         order: [[sequelize.literal('totalDonated'), 'DESC']],
         limit: 1, 
@@ -50,7 +48,6 @@ const findTopDonor = async () => {
 
 const findTopMeals = async () => {
     const topMeals = await Rating.findAll({
-        // ΔΙΟΡΘΩΣΗ: Βάσει του Rating.js το property ονομάζεται ratingScore, όχι score
         order: [['ratingScore', 'DESC']],
         limit: 5,
         include: [{
