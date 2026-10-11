@@ -62,13 +62,13 @@ const deleteAd = async ({ adId, cookId }) => {
     });
 
     if (requests.length > 0) {
-        requests.forEach( async (request) => {
+        for (const request of requests) {
             await Request.update({ status: 'rejected' }, { where: { id: request.id } });
             const consumer = await User.findByPk(request.consumerId);
             if (consumer) {
                 await consumer.update({ credits: consumer.credits + request.portions });
             };
-        });
+        };
     };
 
     await ad.update({ status: 'deleted' });
@@ -97,6 +97,10 @@ const getMyAdById = async (cookId, adId) => {
         }
     });
 
+    if (!myAd) {
+        throw new AppError('Ad not found', 404);
+    };
+    
     return myAd;
 };
 

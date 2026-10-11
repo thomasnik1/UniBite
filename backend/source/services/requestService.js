@@ -181,7 +181,7 @@ const reportNoShow = async ({ cookId, requestId }) => {
     };
 
     await ad.update({ portions: ad.portions + request.portions });
-    await request.update({ noShowReported: 1 });
+    await request.update({ noShowReported: 1, penaltyApplied: 1 });
     await consumer.update({ credits: consumer.credits + request.portions -1 });
     return;
 };

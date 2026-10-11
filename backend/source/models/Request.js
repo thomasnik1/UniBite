@@ -23,17 +23,17 @@ const Request = sequelize.define('Request', {
     isPickedUp : {
         type : DataTypes.BOOLEAN,
         field: 'is_picked_up',
-        defaultValue : 'false'
+        defaultValue : false
     },
     isRated : {
         type: DataTypes.BOOLEAN,
         field: 'is_rated',
-        defaultValue : 'false'
+        defaultValue : false
     },
     noShowReported : {
         type : DataTypes.BOOLEAN,
         field: 'no_show_reported',
-        defaultValue : 'false'
+        defaultValue : false
     },
     pickupTime: {
         type: DataTypes.DATE,
@@ -42,7 +42,7 @@ const Request = sequelize.define('Request', {
     penaltyApplied: {
         type: DataTypes.BOOLEAN,
         field: 'penalty_applied',
-        defaultValue: 'false'
+        defaultValue: false
     }
 }, {
     tableName : 'requests',
