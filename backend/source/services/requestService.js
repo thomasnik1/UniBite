@@ -3,36 +3,34 @@ const { Op } = require('sequelize');
 const AppError = require('../utilities/AppError');
 
 const createRequest =  async (requestData) => {
-
     const newRequestData = {
         ...requestData
     };
 
     const ad = await Ad.findByPk(newRequestData.adId);
-    const user = await User.findByPk(newRequestData.consumerId);
-
     if (!ad) {
-        throw new Error('Ad not found');
+        throw new AppError('Ad not found', 404);
     };
 
     if (ad.status !== 'active') {
-        throw new Error('Ad is no longer active');
-    }
+        throw new AppError('Ad is no longer active', 400);
+    };
+
+    const user = await User.findByPk(newRequestData.consumerId);
+    if (!user) {
+        throw new AppError('User not found', 404);
+    };
 
     if (user.id === ad.cookId) {
-        throw new Error('You cannot request your own ad');
+        throw new AppError('You cannot request your own ad', 400);
     };
 
     if (user.credits < newRequestData.portions) {
-        throw new Error('Not enough credits');
+        throw new AppError('Not enough credits', 400);
     };
 
     if (ad.portions < newRequestData.portions) {
-        throw new Error('Not enough portions available');
-    };
-
-    if (newRequestData.portions <= 0) {
-        throw new Error('Portions must be greater than 0');
+        throw new AppError('Not enough portions available', 400);
     };
 
     const newRequest = await Request.create({
@@ -55,28 +53,27 @@ const createRequest =  async (requestData) => {
     };
 };
 
-const acceptRequest = async ({ requestId, cookId }) => {
-   
+const acceptRequest = async ({ requestId, cookId }) => {  
     const request = await Request.findByPk(requestId);
     if (!request) {
-        throw new Error('Request not found');
+        throw new AppError('Request not found', 404);
+    };
+
+    if (request.status !== 'pending') {
+        throw new AppError('Request is not pending', 400);
     };
 
     const ad = await Ad.findByPk(request.adId);
     if (!ad) {
-        throw new Error('Ad not found');
-    };
-
-    if (request.status !== 'pending') {
-        throw new Error('Request is not pending');
+        throw new AppError('Ad not found', 404);
     };
 
     if (ad.portions < request.portions) {
-        throw new Error('Not enough portions available');
+        throw new AppError('Not enough portions available', 400);
     };
 
     if (cookId !== ad.cookId) {
-        throw new Error('Unauthorized to accept this request');
+        throw new AppError('Unauthorized to accept this request', 403);
     };
 
     await request.update({ status: 'approved' });
@@ -90,27 +87,26 @@ const acceptRequest = async ({ requestId, cookId }) => {
 
 const rejectRequest = async ({ requestId, cookId }) => {
     const request = await Request.findByPk(requestId);
-
     if (!request) {
-        throw new Error('Request not found');
+        throw new AppError('Request not found', 404);
+    };
+
+    if (request.status !== 'pending') {
+        throw new AppError('Request is not pending', 400);
     };
 
     const ad = await Ad.findByPk(request.adId);
     if (!ad) {
-        throw new Error('Ad not found');
+        throw new AppError('Ad not found', 404);
+    };
+
+    if (ad.cookId !== cookId) {
+        throw new AppError('Unauthorized to reject this request', 403)
     };
 
     const user = await User.findByPk(request.consumerId);
     if (!user) {
-        throw new Error('Consumer not found');
-    }
-
-    if (request.status !== 'pending') {
-        throw new Error('Request is not pending');
-    };
-
-    if (ad.cookId !== cookId) {
-        throw new Error('Unauthorized to reject this request.')
+        throw new AppError('Consumer not found', 404);
     };
 
     await request.update({ status: 'rejected' });
@@ -119,32 +115,31 @@ const rejectRequest = async ({ requestId, cookId }) => {
 };
 
 const confirmPickup = async ({ cookId, requestId }) => {
-
     const cook = await User.findByPk(cookId);
     if (!cook) {
-        throw new Error('Cook not found');
+        throw new AppError('Cook not found', 404);
     };
 
     const request = await Request.findByPk(requestId);
     if (!request) {
-        throw new Error('Request not found');
+        throw new AppError('Request not found', 404);
     };
 
     if (request.status !== 'approved') {
-        throw new Error('Request is not approved');
+        throw new AppError('Request is not approved', 400);
     };
 
     if (request.isPickedUp) {
-        throw new Error('Request has already been picked up');
+        throw new AppError('Request has already been picked up', 400);
     };
 
     const ad = await Ad.findByPk(request.adId);
     if (!ad) {
-        throw new Error('Ad not found');
+        throw new AppError('Ad not found', 404);
     };
 
     if(cook.id !== ad.cookId) {
-        throw new Error('Unauthorized to confirm pickup');
+        throw new AppError('Unauthorized to confirm pickup', 403);
     };
 
     const pickupTime = new Date();
@@ -153,38 +148,36 @@ const confirmPickup = async ({ cookId, requestId }) => {
 };
 
 const reportNoShow = async ({ cookId, requestId }) => {
-
     const cook = await User.findByPk(cookId);
     if (!cook) {
-        throw new Error('Cook not found');
+        throw new AppError('Cook not found', 404);
     };
 
     const request = await Request.findByPk(requestId);
     if (!request) {
-        throw new Error('Request not found');
+        throw new AppError('Request not found', 404);
+    };
+
+    if (request.status !== 'approved') {
+        throw new AppError('Request is not approved', 400);
+    };
+
+    if (request.isPickedUp) {
+        throw new AppError('Request has already been picked up', 400);
     };
 
     const ad = await Ad.findByPk(request.adId);
-
     if (!ad) {
-        throw new Error('Ad not found');
+        throw new AppError('Ad not found', 404);
+    };
+
+    if (cook.id !== ad.cookId) {
+        throw new AppError('Unauthorized to report no show', 403);
     };
 
     const consumer = await User.findByPk(request.consumerId);
     if (!consumer) {
-        throw new Error('Consumer not found');
-    };
-
-    if (cook.id !== ad.cookId) {
-        throw new Error('Unauthorized to report no show');
-    };
-
-    if (request.status !== 'approved') {
-        throw new Error('Request is not approved');
-    };
-
-    if (request.isPickedUp) {
-        throw new Error('Request has already been picked up');
+        throw new AppError('Consumer not found', 404);
     };
 
     await ad.update({ portions: ad.portions + request.portions });
@@ -197,7 +190,7 @@ const showPendingRequests = async (userId) => {
     const user = await User.findByPk(userId);
 
     if(!user) {
-        throw new Error('User does not exist');
+        throw new AppError('User does not exist', 404);
     }
 
     const requests = await Request.findAll({
@@ -220,7 +213,7 @@ const showPastRequests = async (userId) => {
     const user = await User.findByPk(userId);
 
     if(!user) {
-        throw new Error('User does not exist');
+        throw new AppError('User does not exist', 404);
     }
 
     const requests = await Request.findAll({
@@ -240,7 +233,7 @@ const getPendingRequestCount = async (userId) => {
     const user = await User.findByPk(userId);
 
     if(!user) {
-        throw new Error('User does not exist');
+        throw new AppError('User does not exist', 404);
     }
 
     const count = await Request.count({
@@ -263,7 +256,7 @@ const showIncomingRequests = async (userId) => {
     const user = await User.findByPk(userId);
 
     if(!user) {
-        throw new Error('User does not exist');
+        throw new AppError('User does not exist', 404);
     }
 
     const requests = await Request.findAll({
@@ -288,7 +281,7 @@ const showOutgoingRequests = async (userId) => {
     const user = await User.findByPk(userId);
 
     if(!user) {
-        throw new Error('User does not exist');
+        throw new AppError('User does not exist', 404);
     }
 
     const requests = await Request.findAll({

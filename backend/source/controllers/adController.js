@@ -1,4 +1,5 @@
 const adService = require('../services/adService');
+const AppError = require('../utilities/AppError');
 
 const getAllAds = async (req, res) => {
     try {
@@ -6,6 +7,9 @@ const getAllAds = async (req, res) => {
         res.status(200).json(ads);
     } catch (error) {
         console.error(error);
+        if (error instanceof AppError) {
+            return res.status(error.statusCode).json({ error: error.message });
+        }
         res.status(500).json({ error: 'Αποτυχία λήψης αγγελιών', message: error.message });
     }
 };
@@ -22,6 +26,9 @@ const createAd = async (req, res) => {
         res.status(201).json({ message: 'Η αγγελία δημιουργήθηκε!', ad: newAd });
     } catch (error) {
         console.error(error);
+        if (error instanceof AppError) {
+            return res.status(error.statusCode).json({ error: error.message });
+        }
         res.status(500).json({ error: 'Αποτυχία δημιουργίας αγγελίας', message: error.message });
     }
 };
@@ -39,6 +46,9 @@ const editAd = async (req, res) => {
         res.status(200).json({ message: 'Η αγγελία ενημερώθηκε!', ad: editAd });
     } catch (error) {
         console.error(error);
+        if (error instanceof AppError) {
+            return res.status(error.statusCode).json({ error: error.message });
+        }
         res.status(500).json({ error: 'Αποτυχία ενημέρωσης αγγελίας', message: error.message });
     }
 };
@@ -54,6 +64,9 @@ const deleteAd = async (req, res) => {
         res.status(200).json({message: 'Η αγγελία διαγράφηκε!', result: result});
     } catch (error) {
         console.error(error);
+        if (error instanceof AppError) {
+            return res.status(error.statusCode).json({ error: error.message });
+        }
         res.status(500).json({ error: 'Αποτυχία διαγραφής αγγελίας', message: error.message });
     }
     
@@ -66,6 +79,9 @@ const getMyAds = async (req,res) => {
         res.status(200).json(myAds);
     } catch (error) {
         console.error(error);
+        if (error instanceof AppError) {
+            return res.status(error.statusCode).json({ error: error.message });
+        }
         res.status(500).json({ error: 'Error fetching your ads',message: error.message });
     }
 
@@ -80,6 +96,9 @@ const getMyAdById = async (req, res) => {
         res.status(200).json(myAd);
     } catch (error) {
         console.error(error);
+        if (error instanceof AppError) {
+            return res.status(error.statusCode).json({ error: error.message });
+        }
         res.status(500).json({ error: 'Error fetching your ad', message: error.message });
     }
 };

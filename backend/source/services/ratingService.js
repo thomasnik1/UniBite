@@ -4,23 +4,30 @@ const AppError = require('../utilities/AppError');
 
 const createRating = async ({ consumerId, requestId, ratingScore}) => {
     const request = await Request.findByPk(requestId);
-    const ad = await Ad.findByPk(request.adId);
-    const cook = await User.findByPk(ad.cookId);
-
     if (!request) {
-        throw new Error('Request not found');
+        throw new AppError('Request not found', 404);
     };
 
     if (request.consumerId !== consumerId) {
-        throw new Error('Unauthorized to rate this request');
+        throw new AppError('Unauthorized to rate this request', 403);
     };
 
     if (request.status !== 'approved') {
-        throw new Error('Request is not approved');
+        throw new AppError('Request is not approved', 400);
     };
 
     if (request.isPickedUp !== true) {
-        throw new Error('Request has not been picked up yet');
+        throw new AppError('Request has not been picked up yet', 400);
+    };
+
+    const ad = await Ad.findByPk(request.adId);
+    if (!ad) {
+        throw new AppError('Ad not found', 404);
+    };
+
+    const cook = await User.findByPk(ad.cookId);
+    if (!cook) {
+        throw new AppError('Cook not found', 404);
     };
 
     const existingRating = await Rating.findOne({
@@ -33,7 +40,7 @@ const createRating = async ({ consumerId, requestId, ratingScore}) => {
     });
 
     if (existingRating) {
-        throw new Error('You have already rated this request');
+        throw new AppError('You have already rated this request', 400);
     }
 
     const newRating = await Rating.create({

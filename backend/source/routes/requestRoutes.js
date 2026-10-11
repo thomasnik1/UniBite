@@ -6,36 +6,36 @@ const { validateSchema } = require('../middlewares/validatorMiddleware');
 const requestSchema = require('../validators/requestSchema');
 
 router.post('/create' ,
-    validateSchema(requestSchema.createRequestSchema, 'body'),
     authenticateToken,
+    validateSchema(requestSchema.createRequestSchema, 'body'),
     requestController.createRequest
 );
 
 router.put(
     '/accept/:id',
-    validateSchema(requestSchema.acceptRequestSchema, 'params'),
     authenticateToken, 
+    validateSchema(requestSchema.acceptRequestSchema, 'params'),
     requestController.acceptRequest
 );
 
 router.put(
     '/reject/:id',
-    validateSchema(requestSchema.rejectRequestSchema, 'params'),
     authenticateToken,
+    validateSchema(requestSchema.rejectRequestSchema, 'params'),
     requestController.rejectRequest
 );
 
 router.put(
     '/report/:id',
-    validateSchema(requestSchema.reportNoShowSchema, 'params'),
     authenticateToken,
+    validateSchema(requestSchema.reportNoShowSchema, 'params'),
     requestController.reportNoShow
 );
 
 router.put(
     '/confirm/:id',
-    validateSchema(requestSchema.confirmPickupIdSchema, 'params'),
     authenticateToken,
+    validateSchema(requestSchema.confirmPickupIdSchema, 'params'),
     requestController.confirmPickup
 );
 

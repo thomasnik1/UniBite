@@ -10,17 +10,17 @@ router.get('/feed', adController.getAllAds);
 
 router.post(
     '/create',
-    upload.single('image'),
     authenticateToken,
+    upload.single('image'),
     validateSchema(createAdSchema, 'body'),
     adController.createAd
 );
 
 router.patch(
     '/edit/:id',
+    authenticateToken,
     upload.single('image'),
     validateSchema(editAdSchema, 'body'),
-    authenticateToken,
     adController.editAd
 );
 

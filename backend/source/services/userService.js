@@ -17,10 +17,10 @@ const createUser = async ({ username, password, email }) => {
 
     if (existingUser) {
         if (existingUser.email === email) {
-            throw new AppError('Email already exists', 418);
+            throw new AppError('Email already exists', 409);
         }
         else if (existingUser.username ===  username) {
-            throw new Error('Username already exists');
+            throw new AppError('Username already exists', 409);
         }
     }
 
@@ -63,14 +63,13 @@ const loginUser = async ({ username, password }) => {
     const user = await User.findOne({ where : { username } });
 
     if (!user) {
-        throw new Error('Invalid username or password');
+        throw new AppError('Invalid username or password', 401);
     };
 
     const isPasswordValid = await passwordService.verifyPassword(password, user.password);
 
     if (!isPasswordValid) {
-        throw new Error('Invalid username or password');
-
+        throw new AppError('Invalid username or password', 401);
     };
 
     const token = jwt.sign(
@@ -102,7 +101,7 @@ const loginUser = async ({ username, password }) => {
 const logoutUser = async (userId) => {
     const user = await User.findByPk(userId);
     if (!user) {
-        throw new Error('User not found');
+        throw new AppError('User not found', 404);
     }
     return true;
 };
@@ -114,7 +113,7 @@ const refreshToken = async (refreshToken) => {
     const user = await User.findByPk(decoded.userId);
     
     if (!user) {
-        throw new Error('User not found');
+        throw new AppError('User not found', 404);
     }
 
     const newToken = jwt.sign(
@@ -132,6 +131,11 @@ const getCurrentUser = async (userId) => {
     const user = await User.findByPk(userId, {
         attributes: ['username', 'email', 'role', 'credits']
     });
+
+    if (!user) {
+        throw new AppError('User not found',404);
+    };
+
     return user;
 };
 
@@ -147,10 +151,10 @@ const createAdmin = async ({ username, password, email }) => {
 
     if (existingUser) {
         if (existingUser.email === email) {
-            throw new AppError('Email already exists', 418);
+            throw new AppError('Email already exists', 409);
         }
         else if (existingUser.username ===  username) {
-            throw new Error('Username already exists');
+            throw new AppError('Username already exists', 409);
         }
     }
 

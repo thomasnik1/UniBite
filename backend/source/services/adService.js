@@ -9,11 +9,9 @@ const getAllAds = async () => {
 };
 
 const createAd = async (adData) => {
-   
     const newAdData = {
         ...adData
     }
-//probably need to add some checks here
     
     const newAd = await Ad.create(newAdData);
 
@@ -27,16 +25,13 @@ const editAd = async (editAdData) => {
     };
 
     const ad = await Ad.findByPk(newEditAdData.adId);
-
     if (!ad) {
-        throw new Error('Ad not found');
-    }
+        throw new AppError('Ad not found', 404);
+    };
 
     if (ad.cookId !== newEditAdData.cookId) {
-        throw new Error('Unauthorized to edit this ad');
-    }
-
-    //this might break right here, need to test later
+        throw new AppError('Unauthorized to edit this ad', 403);
+    };
 
     await ad.update(newEditAdData);
     return ad;
@@ -46,15 +41,15 @@ const deleteAd = async ({ adId, cookId }) => {
     const ad = await Ad.findByPk(adId);
 
     if (!ad) {
-        throw new Error('Ad not found');
+        throw new AppError('Ad not found', 404);
     };
 
     if (ad.cookId !== cookId) {
-        throw new Error('Unauthorized to delete this ad');
+        throw new AppError('Unauthorized to delete this ad', 403);
     };
 
     if (ad.status === 'deleted') {
-        throw new Error('Ad is already deleted');
+        throw new AppError('Ad is already deleted', 400);
     };
 
     const requests = await Request.findAll({
@@ -81,7 +76,6 @@ const deleteAd = async ({ adId, cookId }) => {
 };
 
 const getMyAds = async (cookId) => {
-
     const myAds = await Ad.findAll({
         where: {cookId: cookId}
     });
@@ -93,7 +87,7 @@ const getMyAdById = async (cookId, adId) => {
 
     const cook = await User.findByPk(cookId);
     if (!cook) {
-        throw new Error('Cook not found');
+        throw new AppError('Cook not found', 404);
     };
 
     const myAd = await Ad.findOne({

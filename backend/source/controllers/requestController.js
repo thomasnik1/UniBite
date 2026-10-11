@@ -1,4 +1,5 @@
 const requestService = require('../services/requestService');
+const AppError = require('../utilities/AppError');
 
 const createRequest = async (req, res) => {
     try {
@@ -6,9 +7,13 @@ const createRequest = async (req, res) => {
             consumerId: req.user.userId,
             ...req.body
         });
+
         res.status(201).json({ message: 'Η αίτηση δημιουργήθηκε!', request: request });
     } catch (error) {
         console.error(error);
+        if (error instanceof AppError) {
+            return res.status(error.statusCode).json({ error: error.message });
+        }
         res.status(500).json({ message: 'Σφάλμα κατά τη δημιουργία της αίτησης', error: error.message });
     }
 };
@@ -24,6 +29,9 @@ const acceptRequest = async (req, res) => {
         res.status(200).json({ message: 'Η αίτηση έγινε αποδεκτή!', request: result });
     } catch (error) {
         console.error(error);
+        if (error instanceof AppError) {
+            return res.status(error.statusCode).json({ error: error.message });
+        }
         res.status(500).json({ message: 'Σφάλμα κατά την αποδοχή της αίτησης', error: error.message });
     }
 };
@@ -39,6 +47,9 @@ const rejectRequest = async (req, res) => {
         res.status(200).json({ message: 'Η αίτηση απορρίφθηκε!', request: result });
     } catch (error) {
         console.error(error);
+        if (error instanceof AppError) {
+            return res.status(error.statusCode).json({ error: error.message });
+        }
         res.status(500).json({ message: 'Σφάλμα κατά την απόρριψη της αίτησης', error: error.message });
     }
 };
@@ -54,6 +65,9 @@ const confirmPickup = async (req, res) => {
         res.status(200).json({ message: 'Η μεριδα παρεληφθη επιτυχως', request: result });
     } catch (error) {
         console.error(error);
+        if (error instanceof AppError) {
+            return res.status(error.statusCode).json({ error: error.message });
+        }
         res.status(500).json({ message: ' Αποτυχια κατα την επιβεβαιωση παραλαβης', error: error.message});
     }
 };
@@ -69,6 +83,9 @@ const reportNoShow = async (req, res) => {
         res.status(200).json({ message: 'User has succesfully been reported', request: result });
     } catch (error) {
         console.error(error);
+        if (error instanceof AppError) {
+            return res.status(error.statusCode).json({ error: error.message });
+        }
         res.status(500).json({ message: 'User report failed', error: error.message});
     }
 };
@@ -76,25 +93,31 @@ const reportNoShow = async (req, res) => {
 const showPendingRequests = async (req, res) => {
     try {
         const userId = req.user.userId;
+
         const result = await requestService.showPendingRequests(userId);
         res.status(200).json({ message: 'Pending requests', result });
     } catch (error) {
         console.error(error);
+        if (error instanceof AppError) {
+            return res.status(error.statusCode).json({ error: error.message });
+        }
         res.status(500).json({ message: 'Failed to load requests', error: error.message })
     }
-
 };
 
 const showPastRequests = async (req, res) => {
     try {
         const userId = req.user.userId;
+
         const result = await requestService.showPastRequests(userId);
         res.status(200).json({ message: 'Past requests', result });
     } catch (error) {
         console.error(error);
+        if (error instanceof AppError) {
+            return res.status(error.statusCode).json({ error: error.message });
+        }
         res.status(500).json({ message: 'Failed to load past requests', error: error.message })
     }
-
 };
 
 const getPendingRequestCount = async (req, res) => {
@@ -104,6 +127,9 @@ const getPendingRequestCount = async (req, res) => {
         res.status(200).json({ count });
     } catch (error) {
         console.error(error);
+        if (error instanceof AppError) {
+            return res.status(error.statusCode).json({ error: error.message });
+        }
         res.status(500).json({ message: 'Failed to load pending request count', error: error.message })
     }
 };
@@ -115,6 +141,9 @@ const showIncomingRequests = async (req, res) => {
         res.status(200).json({ message: 'Incoming requests', result });
     } catch (error) {
         console.error(error);
+        if (error instanceof AppError) {
+            return res.status(error.statusCode).json({ error: error.message });
+        }
         res.status(500).json({ message: 'Failed to load incoming requests', error: error.message })
     }
 };
@@ -126,6 +155,9 @@ const showOutgoingRequests = async (req, res) => {
         res.status(200).json({ message: 'Outgoing requests', result });
     } catch (error) {
         console.error(error);
+        if (error instanceof AppError) {
+            return res.status(error.statusCode).json({ error: error.message });
+        }
         res.status(500).json({ message: 'Failed to load outgoing requests', error: error.message })
     }
 };

@@ -1,4 +1,5 @@
 const userService = require('../services/userService');
+const AppError = require('../utilities/AppError');
 
 const createUser = async (req, res) => {
     try{
@@ -6,6 +7,9 @@ const createUser = async (req, res) => {
         res.status(201).json({ message: 'Ο χρήστης δημιουργήθηκε!', result });   
     } catch (error) {
         console.error(error);
+        if (error instanceof AppError) {
+            return res.status(error.statusCode).json({ error: error.message });
+        }
         res.status(500).json({ error: 'Αποτυχία δημιουργίας χρήστη' });
     }
 };
@@ -16,6 +20,9 @@ const loginUser = async (req, res) => {
         res.status(200).json({ message: 'Επιτυχής σύνδεση!', result });
     } catch (error) {
         console.error(error);
+        if (error instanceof AppError) {
+            return res.status(error.statusCode).json({ error: error.message });
+        }
         res.status(401).json({ error: 'Αποτυχία σύνδεσης χρήστη' });
     }
 };
@@ -27,6 +34,9 @@ const logoutUser = async (req, res) => {
         res.status(200).json({ message: 'Επιτυχής αποσύνδεση!', user: result });
     } catch (error) {
         console.error(error);
+        if (error instanceof AppError) {
+            return res.status(error.statusCode).json({ error: error.message });
+        }
         res.status(500).json({ error: 'Αποτυχία αποσύνδεσης χρήστη' });
     }
 };
@@ -44,6 +54,9 @@ const refreshToken = async (req, res) => {
         res.status(200).json({ refreshToken: result.token });
     } catch (error) {
         console.error(error);
+        if (error instanceof AppError) {
+            return res.status(error.statusCode).json({ error: error.message });
+        }
         res.status(403).json({ error: 'Invalid refresh token' });
     }
 };
@@ -55,6 +68,9 @@ const getCurrentUser = async (req, res) => {
         res.status(200).json({ user: result });
     } catch (error) {
         console.error(error);
+        if (error instanceof AppError) {
+            return res.status(error.statusCode).json({ error: error.message });
+        }
         res.status(500).json({ error: 'Αποτυχία λήψης στοιχείων χρήστη' });
     }
 };
@@ -65,6 +81,9 @@ const createAdmin = async (req, res) => {
         res.status(201).json({ message: 'Ο admin δημιουργήθηκε!', result });   
     } catch (error) {
         console.error(error);
+        if (error instanceof AppError) {
+            return res.status(error.statusCode).json({ error: error.message });
+        }
         res.status(500).json({ error: 'Αποτυχία δημιουργίας admin' });
     }
 };
