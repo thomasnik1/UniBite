@@ -143,7 +143,7 @@ const confirmPickup = async ({ cookId, requestId }) => {
     };
 
     const pickupTime = new Date();
-    await request.update({ isPickedUp: 1 , pickupTime: pickupTime });
+    await request.update({ isPickedUp: true , pickupTime: pickupTime });
     return;
 };
 
@@ -181,7 +181,7 @@ const reportNoShow = async ({ cookId, requestId }) => {
     };
 
     await ad.update({ portions: ad.portions + request.portions });
-    await request.update({ noShowReported: 1, penaltyApplied: 1 });
+    await request.update({ noShowReported: true, penaltyApplied: true });
     await consumer.update({ credits: consumer.credits + request.portions -1 });
     return;
 };

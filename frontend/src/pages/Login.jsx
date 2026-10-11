@@ -62,7 +62,7 @@ function Login() {
                 <div>
                     <label>Username:</label><br />
                     <input 
-                        type="Username" 
+                        type="text" 
                         value={username}
                         onChange={(e) => setUsername(e.target.value)}
                         style={{ width: '100%', padding: '8px' }}
