@@ -35,7 +35,7 @@ function Register() {
             setSuccess('Επιτυχής εγγραφή! Μεταφέρεστε στις αγγελίες...');
             
             setTimeout(() => {
-                navigate('/ads');
+                navigate('/ads/feed');
             }, 150);
 
         } catch (err) {
@@ -62,7 +62,8 @@ function Register() {
                                 <Form.Group className="mb-3">
                                     <Form.Label>Όνομα Χρήστη</Form.Label>
                                     <Form.Control 
-                                        type="text" 
+                                        type="text"
+                                        placeholder="username"
                                         value={username}
                                         onChange={(e) => setUsername(e.target.value)}
                                         required

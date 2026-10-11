@@ -1,7 +1,7 @@
 import axios from 'axios';
 
 const api = axios.create({
-    baseURL: 'http://localhost:3000/api', 
+    baseURL: import.meta.env.VITE_API_URL, 
     headers: {
         'Content-Type': 'application/json'
     }
@@ -27,10 +27,10 @@ api.interceptors.response.use(
         return response;
     },
     (error) => {
-        if (error.response && error.response.status === 403) {
+        if (error.response && error.response.status === 401) {
             sessionStorage.removeItem('token');
             
-            window.location.href = '/'; 
+            navigate('/login'); 
         }
         
         return Promise.reject(error);

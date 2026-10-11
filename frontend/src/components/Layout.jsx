@@ -20,7 +20,7 @@ function Layout() {
 
     const handleLogout = () => {
         logout();
-        sessionStorage.clear(); // Καθαρίζουμε και το sessionStorage για απόλυτη ασφάλεια
+        sessionStorage.clear(); 
         navigate('/');
     };
 
@@ -35,7 +35,6 @@ function Layout() {
         };
 
         const storedToken = sessionStorage.getItem('token');
-        // Ο admin δεν χρειάζεται να βλέπει ειδοποιήσεις για αιτήματα μερίδων
         if (storedToken && !isAdmin) {
             fetchUnreadRequests();
         }
@@ -50,8 +49,7 @@ function Layout() {
         <div className="d-flex flex-column min-vh-100">
             <Navbar bg="dark" variant="dark" expand="lg" className="mb-4">
                 <Container>
-                    {/* Κάνουμε το λογότυπο δυναμικό link ανάλογα με τον ρόλο */}
-                    <Navbar.Brand as={Link} to={isLoggedIn ? (isAdmin ? "/admin/dashboard" : "/ads") : "/"}>
+                    <Navbar.Brand as={Link} to={isLoggedIn ? (isAdmin ? "/admin/dashboard" : "/ads/feed") : "/"}>
                         <img 
                             src={logoImg}
                             alt="UniBite Logo"
@@ -71,7 +69,7 @@ function Layout() {
                                     ) : (
                                         // --- ΤΙ ΒΛΕΠΕΙ Ο ΧΡΗΣΤΗΣ ---
                                         <>
-                                            <Nav.Link as={Link} to="/ads">Αγγελίες</Nav.Link>
+                                            <Nav.Link as={Link} to="/ads/feed">Αγγελίες</Nav.Link>
                                             <Nav.Link as={Link} to="/ads/create">Νέα Αγγελία</Nav.Link>
                                             <Nav.Link as={Link} to="/ads/my-ads">Οι Αγγελίες Μου</Nav.Link>
                                             <Nav.Link as={Link} to="/requests/show" className="position-relative">

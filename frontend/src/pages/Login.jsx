@@ -39,7 +39,7 @@ function Login() {
             if (userRole === 'admin') {
                 navigate('/admin/dashboard');
             } else {
-                navigate('/ads');
+                navigate('/ads/feed');
             }
         } catch (err) {
             console.error(err);

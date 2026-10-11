@@ -46,9 +46,7 @@ function Ads() {
                     portions: requestedAmount
                 });
                 
-                // ΔΙΟΡΘΩΣΗ: Αντί να κάνουμε filter και να τη σβήνουμε, 
-                // απλά μειώνουμε τις μερίδες. Αν μηδενιστούν, αλλάζουμε το status.
-                setAds(ads.map(ad => {
+                setAds(prev => prev.map(ad => {
                     if ((ad._id || ad.id) === adId) {
                         const newPortions = ad.portions - requestedAmount;
                         return { 
