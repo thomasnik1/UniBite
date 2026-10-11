@@ -61,44 +61,6 @@ const createRating = async ({ consumerId, requestId, ratingScore}) => {
     return newRating;
 }
 
-const editRating = async (editRatingData) => {
-    
-    const newEditRatingData = {
-        ...editRatingData
-    };
-
-    const rating = await Rating.findByPk(newEditRatingData.ratingId);
-
-    if (!rating) {
-        throw new Error('Rating not found');
-    };
-
-    if (rating.consumerId !== newEditRatingData.consumerId) {
-        throw new Error('Unauthorized to rate this request');
-    };
-
-    const editedRating = await rating.update(newEditRatingData);
-
-    return editedRating;
-};
-
-const deleteRating = async ({ ratingId, consumerId }) => {
-
-    const rating = await Rating.findByPk(ratingId);
-
-    if (!rating) {
-        throw new Error('Rating not found');
-    };
-
-    if (rating.consumerId !== consumerId) {
-        throw new Error('Unauthorized to delete this request');
-    };    
-
-    const deleteRating = await rating.destroy();
-};
-
 module.exports = {
-    createRating,
-    editRating,
-    deleteRating
+    createRating
 };

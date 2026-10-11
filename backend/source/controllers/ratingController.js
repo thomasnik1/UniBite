@@ -20,46 +20,6 @@ const createRating = async (req, res) => {
     }
 };
 
-const editRating = async (req, res) => {
-    try {
-        const editRatingData = {
-            consumerId: req.user.userId,
-            ...req.body
-        };
-
-        const result = await ratingService.editRating(editRatingData);
-        res.status(200).json({ message: 'Η αξιολογηση ενημερωσθηκε επιτυχως', rating: result});
-    }
-    catch (error) {
-        console.error(error);
-        if (error instanceof AppError) {
-            return res.status(error.statusCode).json({ error: error.message });
-        }
-        res.status(500).json({ message: 'Η ενημερωση της αξιολογησης απετυχε', error: error.message });
-    }
-};
-
-const deleteRating = async (req, res) => {
-    try {
-
-        const deleteRatingData = {
-            ratingId: req.params.id,
-            consumerId: req.user.userId
-        };
-
-        const result = await ratingService.deleteRating(deleteRatingData);
-        res.status(204).json({ message: 'Η αγιολογηση διαγραφθηκε επιτυχως', rating: result });
-    } catch (error) {
-        console.log(error);
-        if (error instanceof AppError) {
-            return res.status(error.statusCode).json({ error: error.message });
-        }
-        res.status(500).json({ message: 'Σφαλμα κατα τη διαγραφη της αξιολογησης', error: error.message });
-    }
-};
-
 module.exports = {
-    createRating,
-    editRating,
-    deleteRating
+    createRating
 };
