@@ -37,6 +37,7 @@ CREATE TABLE IF NOT EXISTS requests (
     status ENUM('pending', 'approved', 'rejected') DEFAULT 'pending',
     is_picked_up BOOLEAN DEFAULT FALSE,
     no_show_reported BOOLEAN DEFAULT FALSE,
+    is_rated BOOLEAN DEFAULT FALSE,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     pickup_time TIMESTAMP NULL DEFAULT NULL,
     penalty_applied BOOLEAN DEFAULT FALSE,

@@ -160,7 +160,8 @@ const createAdmin = async ({ username, password, email }) => {
         username: username,
         email: email,
         password: hashedPassword,
-        role: 'admin'
+        role: 'admin',
+        credits: 0
     });
 
     const token = jwt.sign(
@@ -180,7 +181,8 @@ const createAdmin = async ({ username, password, email }) => {
             id: newUser.id,
             username: newUser.username,
             email: newUser.email,
-            role: newUser.role
+            role: newUser.role,
+            credits: newUser.credits
         },
         token: token,
         refreshToken: refreshToken

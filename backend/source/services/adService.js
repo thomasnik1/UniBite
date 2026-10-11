@@ -2,7 +2,7 @@ const { Ad, Request, User } = require('../models/models');
 const { Op } = require('sequelize');
 const AppError = require('../utilities/AppError');
 
-const getAllActiveAds = async () => {
+const getAllAds = async () => {
     return await Ad.findAll({
         order: [['created_at', 'DESC']]
     });
@@ -47,11 +47,34 @@ const deleteAd = async ({ adId, cookId }) => {
 
     if (!ad) {
         throw new Error('Ad not found');
-    }
+    };
 
     if (ad.cookId !== cookId) {
         throw new Error('Unauthorized to delete this ad');
-    }
+    };
+
+    if (ad.status === 'deleted') {
+        throw new Error('Ad is already deleted');
+    };
+
+    const requests = await Request.findAll({
+        where: {
+            adId: adId,
+            status: {
+                [Op.in]: ['pending', 'approved']
+            }
+        }
+    });
+
+    if (requests.length > 0) {
+        requests.forEach( async (request) => {
+            await Request.update({ status: 'rejected' }, { where: { id: request.id } });
+            const consumer = await User.findByPk(request.consumerId);
+            if (consumer) {
+                await consumer.update({ credits: consumer.credits + request.portions });
+            };
+        });
+    };
 
     await ad.update({ status: 'deleted' });
     return ad;
@@ -67,15 +90,24 @@ const getMyAds = async (cookId) => {
 };
 
 const getMyAdById = async (cookId, adId) => {
+
+    const cook = await User.findByPk(cookId);
+    if (!cook) {
+        throw new Error('Cook not found');
+    };
+
     const myAd = await Ad.findOne({
-        where: {id: adId}
+        where: {
+            id: adId,
+            cookId: cookId
+        }
     });
 
     return myAd;
 };
 
 module.exports = {
-    getAllActiveAds,
+    getAllAds,
     createAd,
     editAd,
     deleteAd,

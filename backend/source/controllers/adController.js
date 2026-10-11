@@ -1,8 +1,8 @@
 const adService = require('../services/adService');
 
-const getAllActiveAds = async (req, res) => {
+const getAllAds = async (req, res) => {
     try {
-        const ads = await adService.getAllActiveAds();
+        const ads = await adService.getAllAds();
         res.status(200).json(ads);
     } catch (error) {
         console.error(error);
@@ -85,7 +85,7 @@ const getMyAdById = async (req, res) => {
 };
 
 module.exports = {
-    getAllActiveAds,
+    getAllAds,
     createAd,
     editAd,
     deleteAd,

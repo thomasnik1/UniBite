@@ -58,12 +58,11 @@ const createRequest =  async (requestData) => {
 const acceptRequest = async ({ requestId, cookId }) => {
    
     const request = await Request.findByPk(requestId);
-    const ad = await Ad.findByPk(request.adId);
-
     if (!request) {
         throw new Error('Request not found');
     };
 
+    const ad = await Ad.findByPk(request.adId);
     if (!ad) {
         throw new Error('Ad not found');
     };
@@ -91,12 +90,20 @@ const acceptRequest = async ({ requestId, cookId }) => {
 
 const rejectRequest = async ({ requestId, cookId }) => {
     const request = await Request.findByPk(requestId);
-    const ad = await Ad.findByPk(request.adId);
-    const user = await User.findByPk(request.consumerId);
 
     if (!request) {
         throw new Error('Request not found');
     };
+
+    const ad = await Ad.findByPk(request.adId);
+    if (!ad) {
+        throw new Error('Ad not found');
+    };
+
+    const user = await User.findByPk(request.consumerId);
+    if (!user) {
+        throw new Error('Consumer not found');
+    }
 
     if (request.status !== 'pending') {
         throw new Error('Request is not pending');
@@ -114,15 +121,30 @@ const rejectRequest = async ({ requestId, cookId }) => {
 const confirmPickup = async ({ cookId, requestId }) => {
 
     const cook = await User.findByPk(cookId);
-    const request = await Request.findByPk(requestId);
-    const ad = await Ad.findByPk(request.adId);
+    if (!cook) {
+        throw new Error('Cook not found');
+    };
 
-    if(cook.id !== ad.cookId) {
-        throw new Error('Unauthorized to confirm pickup');
+    const request = await Request.findByPk(requestId);
+    if (!request) {
+        throw new Error('Request not found');
     };
 
     if (request.status !== 'approved') {
         throw new Error('Request is not approved');
+    };
+
+    if (request.isPickedUp) {
+        throw new Error('Request has already been picked up');
+    };
+
+    const ad = await Ad.findByPk(request.adId);
+    if (!ad) {
+        throw new Error('Ad not found');
+    };
+
+    if(cook.id !== ad.cookId) {
+        throw new Error('Unauthorized to confirm pickup');
     };
 
     const pickupTime = new Date();
@@ -133,9 +155,25 @@ const confirmPickup = async ({ cookId, requestId }) => {
 const reportNoShow = async ({ cookId, requestId }) => {
 
     const cook = await User.findByPk(cookId);
+    if (!cook) {
+        throw new Error('Cook not found');
+    };
+
     const request = await Request.findByPk(requestId);
+    if (!request) {
+        throw new Error('Request not found');
+    };
+
     const ad = await Ad.findByPk(request.adId);
+
+    if (!ad) {
+        throw new Error('Ad not found');
+    };
+
     const consumer = await User.findByPk(request.consumerId);
+    if (!consumer) {
+        throw new Error('Consumer not found');
+    };
 
     if (cook.id !== ad.cookId) {
         throw new Error('Unauthorized to report no show');

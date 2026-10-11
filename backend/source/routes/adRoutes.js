@@ -6,7 +6,7 @@ const { validateSchema } = require('../middlewares/validatorMiddleware');
 const { createAdSchema, editAdSchema, deleteAdSchema } = require('../validators/adSchema')
 const upload = require('../middlewares/uploadMiddleware');
 
-router.get('/feed', adController.getAllActiveAds);
+router.get('/feed', adController.getAllAds);
 
 router.post(
     '/create',

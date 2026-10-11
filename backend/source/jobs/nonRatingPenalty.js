@@ -20,7 +20,7 @@ const nonRatingPenalty = async() => {
                 if (req.consumer) {
                 await req.consumer.decrement('credits', { by: 1 });
             }
-            await req.update({ penalty_applied: true });
+            await req.update({ 'penalty_applied': true });
         };
 
     } catch (error) {

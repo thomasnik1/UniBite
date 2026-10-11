@@ -99,7 +99,7 @@ function Ads() {
                                         {ad.status !== 'active' && <span style={{color: 'red'}}> (Μη Διαθέσιμη)</span>}
                                         <br />
                                         <em>Μερίδες: {ad.portions}</em> <br />
-                                        Οδηγίες: {ad.pickupLocation}
+                                        Οδηγίες: {ad.pickupLocationDetails}
                                     </Popup>
                                 </Marker>
                             );
