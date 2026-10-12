@@ -97,4 +97,4 @@ git clone git@github.com:thomasnik1/UniBite.git
 ```
 docker compose up -d
 ```
-* Access the frontend: **localhost:5173**
+* Access the frontend from your browser on **localhost:5173**
