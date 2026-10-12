@@ -6,6 +6,14 @@
 
 A web platform that aims to help students share food within the academic community. UniBite was developed as part of the "Web Programming and Systems" course at the Computer Engineering and Informatics Department (CEID), University of Patras.
 
+## Table of Contents
+- [Project Description](#project-description)
+- [Key Features](#key-features)
+- [Screenshots](#screenshots)
+- [Tech Stack](tech-stack)
+- [Getting Started](getting-started)
+- [Installation](#installation)
+
 ## Project Description
 Developing UniBite provides students with their first hands-on experience in web development. The focus of this project is to create a web platform for food sharing that's used by the academic community. The idea behind UniBite is that students can cook large portions of food, keep some for themselves, and share the rest with other students, users of UniBite. With each portion the users give out, they earn back points that they can use to claim food from other users.
 
